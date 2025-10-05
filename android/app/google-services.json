@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "70244816577",
+    "project_id": "eourpean-single-muslilm",
+    "storage_bucket": "eourpean-single-muslilm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70244816577:android:1bb739eaaf5902915be640",
+        "android_client_info": {
+          "package_name": "com.example.european_single_marriage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQpcSKYS3vdlKk6BuvRbnS2gI7jMpdt-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
