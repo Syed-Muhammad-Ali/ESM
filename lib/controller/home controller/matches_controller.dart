@@ -38,28 +38,34 @@ class MatchesController extends GetxController with NetworkAwareController {
   final TextEditingController eatingHabits = TextEditingController();
   final TextEditingController smokingHabits = TextEditingController();
   final TextEditingController drinkingHabits = TextEditingController();
-  final TextEditingController profileCreatedBy = TextEditingController();
+  // final TextEditingController profileCreatedBy = TextEditingController();
   final TextEditingController maritalStatus = TextEditingController();
   final TextEditingController livesIn = TextEditingController();
-  final TextEditingController citizen = TextEditingController();
+  // final TextEditingController citizen = TextEditingController();
 
   // Religion Details
   final TextEditingController religion = TextEditingController();
   final TextEditingController caste = TextEditingController();
-  final TextEditingController gothram = TextEditingController();
-  final TextEditingController dosham = TextEditingController();
+  final TextEditingController subCaste = TextEditingController();
+  // final TextEditingController dosham = TextEditingController();
 
   // Professional Details
   final TextEditingController employment = TextEditingController();
+  final TextEditingController annualIncome = TextEditingController();
 
   // Educational Details
-  final TextEditingController degree = TextEditingController();
-  final TextEditingController university = TextEditingController();
+  final TextEditingController education = TextEditingController();
+  final TextEditingController occupation = TextEditingController();
+  final TextEditingController workLocation = TextEditingController();
+  final TextEditingController state = TextEditingController();
+  final TextEditingController city = TextEditingController();
 
   // Family Details
   final TextEditingController familyType = TextEditingController();
-  final TextEditingController parents = TextEditingController();
-  final TextEditingController ancestralOrigin = TextEditingController();
+  final TextEditingController familyStatus = TextEditingController();
+  // final TextEditingController parents = TextEditingController();
+  final TextEditingController noOfChildren = TextEditingController();
+  final TextEditingController height = TextEditingController();
 
   /// --- User Model  --- ///
   Rx<List<UserModel>> usersData = Rx<List<UserModel>>([]);

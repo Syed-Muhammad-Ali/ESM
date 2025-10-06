@@ -58,7 +58,7 @@ class BasicDetails extends StatelessWidget {
                       CustomTextField(
                         title: "Date Of Birth:",
                         keyboardType: TextInputType.text,
-                        hintText: "",
+                        hintText: "dd/mm/yyyy",
                         controller: controller.doblCtrl.value,
                         validator:
                             MultiValidator([
@@ -68,10 +68,56 @@ class BasicDetails extends StatelessWidget {
                             ]).call,
                       ),
                       CustomTextField(
+                        title: "Mother Tongue",
+                        controller: controller.motherTongue.value,
+                        keyboardType: TextInputType.text,
+                        hintText: "Enter mother tongue",
+                        // filled: true,
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your mother tongue",
+                              ),
+                            ]).call,
+                      ),
+                      CustomTextField(
+                        title: "Eating Habits",
+                        controller: controller.eatingHabits.value,
+                        hintText: "Enter eating habits",
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your mother tongue",
+                              ),
+                            ]).call,
+                      ),
+                      CustomTextField(
+                        title: "Smoking Habits",
+                        controller: controller.smokingHabits.value,
+                        hintText: "Enter somking habits",
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your somking tongue",
+                              ),
+                            ]).call,
+                      ),
+                      CustomTextField(
+                        title: "Drinking Habits",
+                        controller: controller.drinkingHabits.value,
+                       hintText: "Enter drinking habits",
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your drinking tongue",
+                              ),
+                            ]).call,
+                      ),
+                      CustomTextField(
                         controller: controller.mobileNumber.value,
                         title: "Mobile Number",
                         keyboardType: TextInputType.phone,
-                        hintText: "",
+                        hintText: "Enter number number",
                         validator:
                             MultiValidator([
                               RequiredValidator(

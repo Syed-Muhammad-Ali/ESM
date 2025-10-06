@@ -67,9 +67,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundImage:
-                          (user.profileImages != null &&
-                                  user.profileImages!.isNotEmpty)
-                              ? NetworkImage(user.profileImages!.first)
+                          (user.userProfilePic != null &&
+                                  user.userProfilePic!.isNotEmpty)
+                              ? NetworkImage(user.userProfilePic!)
                               : AssetImage(AppImages.imageURL) as ImageProvider,
                     ),
                     title: CustomText(
@@ -100,9 +100,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
                           receiverId: user.id!,
                           userName: user.name ?? "Unknown",
                           userImage:
-                              (user.profileImages != null &&
-                                      user.profileImages!.isNotEmpty)
-                                  ? user.profileImages!.first
+                              (user.userProfilePic != null &&
+                                      user.userProfilePic!.isNotEmpty)
+                                  ? user.userProfilePic!
                                   : AppImages.imageURL,
                         ),
                       );

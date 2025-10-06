@@ -1,23 +1,27 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatModel {
   final String chatId;
-  final String name;
-  final String message;
-  final String time;
-  final String image;
+  final String peerId;
+  final String peerName;
+  final String lastMessage;
+  final String last_message_time;
+  final String peerImage;
   // final bool isOnline;
   final int unreadCount;
-  final bool isRead; // ✅ for double tick
+  final bool isRead;
 
   ChatModel({
     required this.chatId,
-    required this.name,
-    required this.message,
-    required this.time,
-    required this.image,
+    required this.peerId,
+    required this.peerName,
+    required this.lastMessage,
+    required this.last_message_time,
+    required this.peerImage,
     // this.isOnline = false,
     this.unreadCount = 0,
     this.isRead = false,
@@ -27,13 +31,14 @@ class ChatModel {
     final data = doc.data() as Map<String, dynamic>;
     return ChatModel(
       chatId: data['chatId'] ?? '',
-      name: data['peerName'] ?? '',
-      message: data['last_message'] ?? '',
-      time:
+      peerId: data['peerId'] ?? '',
+      peerName: data['peerName'] ?? '',
+      lastMessage: data['last_message'] ?? '',
+      last_message_time:
           data['last_message_time'] != null
               ? _formatTime((data['last_message_time'] as Timestamp).toDate())
               : '',
-      image: data['peerImage'] ?? '',
+      peerImage: data['peerImage'] ?? '',
       unreadCount: data['unread_count'] ?? 0,
       isRead: data['isRead'] ?? false,
     );

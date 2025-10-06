@@ -8,6 +8,10 @@ class UserModel {
   String? age;
   String? dob;
   String? gender;
+  String? motherTongue;
+  String? eatingHabits;
+  String? smokingHabits;
+  String? drinkingHabits;
   String? userProfilePic;
 
   // Religion
@@ -41,7 +45,7 @@ class UserModel {
 
   // Meta
   int? profileStep;
-  int? profileCompletion;
+  double? profileCompletion;
   Timestamp? createdAt;
   Timestamp? updatedAt;
 
@@ -53,6 +57,10 @@ class UserModel {
     this.age,
     this.dob,
     this.gender,
+    this.motherTongue,
+    this.eatingHabits,
+    this.smokingHabits,
+    this.drinkingHabits,
     this.userProfilePic,
     this.religion,
     this.caste,
@@ -89,6 +97,10 @@ class UserModel {
     age = json['age'];
     dob = json['dob'];
     gender = json['gender'];
+    motherTongue = json['motherTongue'];
+    eatingHabits = json['eatingHabits'];
+    smokingHabits = json['smokingHabits'];
+    drinkingHabits = json['drinkingHabits'];
     userProfilePic = json['userProfilePic'];
 
     religion = json['religion'];
@@ -120,7 +132,10 @@ class UserModel {
             : [];
 
     profileStep = json['profileStep'];
-    profileCompletion = json['profileCompletion'];
+    profileCompletion =
+        (json['profileCompletion'] != null)
+            ? (json['profileCompletion'] as num).toDouble()
+            : null;
 
     createdAt = json['createdAt'] is Timestamp ? json['createdAt'] : null;
     updatedAt = json['updatedAt'] is Timestamp ? json['updatedAt'] : null;
@@ -134,6 +149,10 @@ class UserModel {
     data['age'] = age;
     data['dob'] = dob;
     data['gender'] = gender;
+    data['motherTongue'] = motherTongue;
+    data['eatingHabits'] = eatingHabits;
+    data['smokingHabits'] = smokingHabits;
+    data['drinkingHabits'] = drinkingHabits;
     data['userProfilePic'] = userProfilePic;
 
     data['religion'] = religion;

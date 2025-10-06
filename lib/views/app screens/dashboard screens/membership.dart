@@ -172,17 +172,17 @@ class Membership extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                   AppSizes.spaceBtwItems.heightBox,
-                  subscriptionButton(title: "1 Month Plan", price: "19,99"),
-                  subscriptionButton(
-                    title: "3 Month Plan",
-                    price: "17,99",
-                    save: "(Save 10%)",
-                  ),
-                  subscriptionButton(
-                    title: "6 Month Plan",
-                    price: "14,99",
-                    save: "(Save 25%)",
-                  ),
+                  subscriptionButton(title: "1 Month Plan", price: "99.99"),
+                  // subscriptionButton(
+                  //   title: "3 Month Plan",
+                  //   price: "17,99",
+                  //   save: "(Save 10%)",
+                  // ),
+                  // subscriptionButton(
+                  //   title: "6 Month Plan",
+                  //   price: "14,99",
+                  //   save: "(Save 25%)",
+                  // ),
                 ],
               ),
             ),

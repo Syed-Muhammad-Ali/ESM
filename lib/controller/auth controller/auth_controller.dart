@@ -11,6 +11,7 @@ import 'package:european_single_marriage/core/utils/constant/app_keys.dart';
 import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/data/response/status.dart';
 import 'package:european_single_marriage/data/storage/app_storage.dart';
+import 'package:european_single_marriage/model/user_model.dart';
 import 'package:european_single_marriage/routes/app_routes.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
 import 'package:file_picker/file_picker.dart';
@@ -40,6 +41,10 @@ class AuthController extends GetxController with NetworkAwareController {
   final registerPassword = TextEditingController().obs;
   final agelCtrl = TextEditingController().obs;
   final doblCtrl = TextEditingController().obs;
+  final motherTongue = TextEditingController().obs;
+  final eatingHabits = TextEditingController().obs;
+  final smokingHabits = TextEditingController().obs;
+  final drinkingHabits = TextEditingController().obs;
   final emailCtrl = TextEditingController().obs;
   final familyValueslCtrl = TextEditingController().obs;
   final aboutYourselflCtrl = TextEditingController().obs;
@@ -271,7 +276,7 @@ class AuthController extends GetxController with NetworkAwareController {
         'profileCompletion': 0,
         'createdAt': FieldValue.serverTimestamp(),
       };
-
+      log("regidter data : $data");
       await firebaseServices.addDataToFirestore(
         data: data,
         collection: AppCollections.users,
@@ -330,19 +335,34 @@ class AuthController extends GetxController with NetworkAwareController {
 
       final progress = (step / 5) * 100;
 
+      final Map<String, dynamic> dataToSend = {
+        'profileStep': step,
+        'profileCompletion': progress,
+        ...stepData,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      /// 🧠 LOG: Print or log the data before sending to Firestore
+      log('🔥 Sending data to Firestore for user ${user.uid}:');
+      dataToSend.forEach((key, value) {
+        log('   $key : $value');
+      });
+
       await firebaseServices.updateDataToFirestore(
         collection: AppCollections.users,
         id: user.uid,
-        data: {
-          'profileStep': step,
-          'profileCompletion': progress,
-          ...stepData,
-          'updatedAt': FieldValue.serverTimestamp(),
-        },
+        data: dataToSend,
+        // data: {
+        //   'profileStep': step,
+        //   'profileCompletion': progress,
+        //   ...stepData,
+        //   'updatedAt': FieldValue.serverTimestamp(),
+        // },
       );
 
       final userData = await firebaseServices.getUserData(uid: user.uid);
       if (userData != null) {
+        log('📦 Received userData from Firestore: ${userData.toJson()}');
         await AppStorage.storeLocalUser(AppKeys.userData, userData.toJson());
       }
       Utils.snackBar("Success", "Step $step saved!", AppColors.green);
@@ -352,6 +372,7 @@ class AuthController extends GetxController with NetworkAwareController {
       errorMessage.value = e.toString();
       setRxRequestStatus(Status.ERROR);
       Utils.snackBar("Error", e.toString(), AppColors.red);
+      log('❌ Error in updateProfileStep: $e');
     } finally {
       loading.value = false;
     }
@@ -362,6 +383,10 @@ class AuthController extends GetxController with NetworkAwareController {
     await updateProfileStep(1, {
       'age': agelCtrl.value.text.trim(),
       'dob': doblCtrl.value.text.trim(),
+      'motherTongue': motherTongue.value.text.trim(),
+      'eatingHabits': eatingHabits.value.text.trim(),
+      'smokingHabits': smokingHabits.value.text.trim(),
+      'drinkingHabits': drinkingHabits.value.text.trim(),
       'mobileNo': mobileNumber.value.text.trim(),
       'gender': selectedGender.value,
     });
@@ -599,6 +624,25 @@ class AuthController extends GetxController with NetworkAwareController {
       Utils.snackBar("Error", error.toString(), AppColors.red);
     }
   }
+
+  // Future<void> fetchUserdata() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     final doc =
+  //         await FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user.uid)
+  //             .get();
+  //     // ignore: avoid_print
+  //     print('Firestore user data: ${doc.data()}');
+  //     if (!doc.exists || doc.data() == null) {
+  //       Get.snackbar('Error', 'User document does not exist in Firestore');
+  //       return;
+  //     }
+
+  //     userData.value = UserModel.fromFirestore(doc);
+  //   }
+  // }
 
   /// --- Clear Fields  ---
   void clearController() {

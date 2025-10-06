@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:european_single_marriage/controller/auth%20controller/auth_controller.dart';
+import 'package:european_single_marriage/controller/auth%20controller/delete_account_controller.dart';
 import 'package:european_single_marriage/core/common/custam_container.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/common/main_button.dart';
@@ -24,6 +25,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final authCtrl = Get.put(AuthController());
+  final controller = Get.put(DeleteAccountController());
   UserModel? user;
 
   @override
@@ -132,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     title: "Delete Account",
                     rightImage: "assets/images/arrowForward.png",
                     backgroundColor: Color(0xFFFE1B1F),
-                    onPressed: () {},
+                    onPressed: () => controller.confirmAndDelete(),
                   ),
                 ],
               ),

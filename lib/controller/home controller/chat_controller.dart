@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:european_single_marriage/core/utils/constant/app_collections.dart';
 import 'package:european_single_marriage/data/response/status.dart';
 import 'package:european_single_marriage/model/chat_model.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
@@ -19,15 +20,14 @@ class ChatController extends GetxController {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return FirebaseFirestore.instance
-        .collection('users')
+        .collection(AppCollections.users)
         .doc(userId)
-        .collection('inbox')
+        .collection(AppCollections.inbox)
         .orderBy('last_message_time', descending: true)
         .snapshots()
-        .map((snapshot) {
-          return snapshot.docs
-              .map((doc) => ChatModel.fromFirestore(doc))
-              .toList();
-        });
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => ChatModel.fromFirestore(doc)).toList(),
+        );
   }
 }

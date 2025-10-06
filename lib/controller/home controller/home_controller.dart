@@ -6,6 +6,7 @@ import 'package:european_single_marriage/model/home_model.dart';
 import 'package:european_single_marriage/model/user_model.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController with NetworkAwareController {
@@ -21,13 +22,40 @@ class HomeController extends GetxController with NetworkAwareController {
   Rx<List<UserModel>> sameCasteMatches = Rx<List<UserModel>>([]);
   Rx<List<UserModel>> nearLocationMatches = Rx<List<UserModel>>([]);
   Rx<UserModel?> user = Rx<UserModel?>(null);
-  Rx<UserModel?> matchDetails = Rx<UserModel?>(null);
+  Rxn<UserModel> currentUser = Rxn<UserModel>();
 
   RxString searchQuery = ''.obs;
 
   /// Get current logged-in user ID and data
   final currentUserId = FirebaseAuth.instance.currentUser?.uid;
-  UserModel? currentUser; // Set this after login or from HomeController
+
+  /// --- Load current user from Firestore ---
+  Future<void> loadCurrentUser() async {
+    try {
+      setRxRequestStatus(Status.LOADING);
+
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) {
+        errorMessage.value = "User not logged in";
+        setRxRequestStatus(Status.ERROR);
+        return;
+      }
+
+      final userData = await firebaseServices.getUserData(uid: uid);
+      if (userData != null) {
+        currentUser.value = userData;
+        user.value = userData;
+        setRxRequestStatus(Status.COMPLETED);
+      } else {
+        errorMessage.value = "User not found in Firestore";
+        setRxRequestStatus(Status.ERROR);
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+      setRxRequestStatus(Status.ERROR);
+      debugPrint("❌ Error loading user: $e");
+    }
+  }
 
   /// ---------------- FETCH ALL USERS ----------------
   Future<void> fetchAllMatches() async {
@@ -69,7 +97,7 @@ class HomeController extends GetxController with NetworkAwareController {
   /// ---------------- FETCH SAME CASTE ----------------
 
   Future<void> fetchSameCasteMatches() async {
-    if (currentUser == null) return;
+    if (currentUser.value == null) return;
 
     try {
       setRxRequestStatus(Status.LOADING);
@@ -78,7 +106,7 @@ class HomeController extends GetxController with NetworkAwareController {
           .getDataFromFirestore<List<UserModel>>(
             collection: AppCollections.users,
             where: {
-              "caste": currentUser!.caste,
+              "caste": currentUser.value!.caste,
               "id": {"notEqual": currentUserId},
             },
             fromJson:
@@ -102,7 +130,7 @@ class HomeController extends GetxController with NetworkAwareController {
   /// ---------------- FETCH SAME CITY ----------------
 
   Future<void> fetchNearLocationMatches() async {
-    if (currentUser == null) return;
+    if (currentUser.value == null) return;
 
     try {
       setRxRequestStatus(Status.LOADING);
@@ -111,7 +139,7 @@ class HomeController extends GetxController with NetworkAwareController {
           .getDataFromFirestore<List<UserModel>>(
             collection: AppCollections.users,
             where: {
-              "city": currentUser!.city,
+              "city": currentUser.value!.city,
               "id": {"notEqual": currentUserId},
             },
             fromJson:
@@ -133,35 +161,44 @@ class HomeController extends GetxController with NetworkAwareController {
   }
 
   /// ---------------- SEARCH FUNCTION ----------------
-void searchUsers(String query) {
-  searchQuery.value = query.trim().toLowerCase();
+  void searchUsers(String query) {
+    searchQuery.value = query.trim().toLowerCase();
 
-  // If search field is empty → restore original lists
-  if (searchQuery.value.isEmpty) {
-    allMatches.refresh();
-    sameCasteMatches.refresh();
-    nearLocationMatches.refresh();
-    return;
+    // If search field is empty → restore original lists
+    if (searchQuery.value.isEmpty) {
+      allMatches.refresh();
+      sameCasteMatches.refresh();
+      nearLocationMatches.refresh();
+      return;
+    }
+
+    // Local filtering (no Firebase calls)
+    final filteredAll =
+        allMatches.value
+            .where(
+              (u) => (u.name ?? '').toLowerCase().contains(searchQuery.value),
+            )
+            .toList();
+
+    final filteredSameCaste =
+        sameCasteMatches.value
+            .where(
+              (u) => (u.name ?? '').toLowerCase().contains(searchQuery.value),
+            )
+            .toList();
+
+    final filteredNearLocation =
+        nearLocationMatches.value
+            .where(
+              (u) => (u.name ?? '').toLowerCase().contains(searchQuery.value),
+            )
+            .toList();
+
+    // Update lists only visually
+    allMatches.value = filteredAll;
+    sameCasteMatches.value = filteredSameCaste;
+    nearLocationMatches.value = filteredNearLocation;
   }
-
-  // Local filtering (no Firebase calls)
-  final filteredAll = allMatches.value
-      .where((u) => (u.name ?? '').toLowerCase().contains(searchQuery.value))
-      .toList();
-
-  final filteredSameCaste = sameCasteMatches.value
-      .where((u) => (u.name ?? '').toLowerCase().contains(searchQuery.value))
-      .toList();
-
-  final filteredNearLocation = nearLocationMatches.value
-      .where((u) => (u.name ?? '').toLowerCase().contains(searchQuery.value))
-      .toList();
-
-  // Update lists only visually
-  allMatches.value = filteredAll;
-  sameCasteMatches.value = filteredSameCaste;
-  nearLocationMatches.value = filteredNearLocation;
-}
 
   RxInt notifications = 2.obs;
   RxInt profileCompletion = 40.obs;

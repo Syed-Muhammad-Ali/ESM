@@ -6,6 +6,7 @@ import 'package:european_single_marriage/core/utils/constant/app_images.dart';
 import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
 import 'package:european_single_marriage/data/response/status.dart';
 import 'package:european_single_marriage/model/user_model.dart';
+import 'package:european_single_marriage/routes/app_routes.dart';
 import 'package:european_single_marriage/views/screens%20widgets/home%20Widget/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,11 +20,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final homeCtrl = Get.put(HomeController());
-    final searchController = TextEditingController();
+  final searchController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    homeCtrl.currentUser = homeCtrl.user.value;
+    homeCtrl.loadCurrentUser();
 
     // automatically load all lists
     homeCtrl.fetchAllMatches();
@@ -41,7 +42,17 @@ class _HomeScreenState extends State<HomeScreen> {
           if (homeCtrl.rxRequestStatus.value == Status.LOADING) {
             return const Center(child: CircularProgressIndicator());
           }
+          final currentUser = homeCtrl.currentUser.value;
+
+          if (currentUser == null) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.appBarColor),
+            );
+          }
           final users = homeCtrl.users.value;
+          final profileCompletion = currentUser.profileCompletion ?? 0.0;
+          final profileStep = currentUser.profileStep ?? 0;
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,7 +65,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     CircleAvatar(
                       radius: 25,
-                      backgroundImage: AssetImage(AppImages.imageURL),
+                      backgroundImage:
+                          currentUser.userProfilePic != null &&
+                                  currentUser.userProfilePic!.isNotEmpty
+                              ? NetworkImage(currentUser.userProfilePic!)
+                              : AssetImage(AppImages.imageURL) as ImageProvider,
                     ),
                     AppSizes.sm.widthBox,
                     Column(
@@ -67,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.grey3,
                         ),
                         CustomText(
-                          title: "Ijaz",
+                          title: currentUser.name ?? '',
                           fontSize: 21,
                           fontWeight: FontWeight.w600,
                         ),
@@ -142,10 +157,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                  backgroundImage: AssetImage(
-                                    AppImages.imageURL,
-                                  ),
                                   radius: 25,
+                                  backgroundImage:
+                                      currentUser.userProfilePic != null &&
+                                              currentUser
+                                                  .userProfilePic!
+                                                  .isNotEmpty
+                                          ? NetworkImage(
+                                            currentUser.userProfilePic!,
+                                          )
+                                          : AssetImage(AppImages.imageURL)
+                                              as ImageProvider,
                                 ),
                                 AppSizes.sm.widthBox,
                                 Expanded(
@@ -153,9 +175,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const CustomText(
+                                      CustomText(
                                         title:
-                                            "Oops! Your profile is inprogress. \nComplete now to get more matches",
+                                            profileCompletion >= 100
+                                                ? "Your profile is complete!"
+                                                : "Oops! Your profile is in progress.\nComplete now to get more matches",
                                         fontSize: 13,
                                         fontWeight: FontWeight.w400,
                                         color: Color(0xFF323232),
@@ -170,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           children: [
                                             LinearProgressIndicator(
                                               minHeight: 13.0,
-                                              value: users.profileCompletion,
+                                              value: profileCompletion / 100,
                                               backgroundColor: AppColors.grey,
                                               color: AppColors.orange,
                                               borderRadius:
@@ -181,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               bottom: 0,
                                               child: CustomText(
                                                 title:
-                                                    '${homeCtrl.profileCompletion.value}%',
+                                                    '${profileCompletion.toStringAsFixed(0)}%',
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w500,
                                                 color: AppColors.white,
@@ -191,14 +215,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       AppSizes.sm.heightBox,
-                                      const CustomText(
-                                        title: "Complete Now",
-                                        color: AppColors.blue,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                        textDecoration:
-                                            TextDecoration.underline,
-                                      ),
+                                      if (profileCompletion < 100)
+                                        GestureDetector(
+                                          onTap: () {
+                                            /// Navigate to correct screen based on step
+                                            switch (profileStep) {
+                                              case 1:
+                                                Get.toNamed(
+                                                  AppRoutes.religionDetails,
+                                                );
+                                                break;
+                                              case 2:
+                                                Get.toNamed(
+                                                  AppRoutes.personalDetails,
+                                                );
+                                                break;
+                                              case 3:
+                                                Get.toNamed(
+                                                  AppRoutes.professionalDetails,
+                                                );
+                                                break;
+                                              case 4:
+                                                Get.toNamed(
+                                                  AppRoutes.aboutYourself,
+                                                );
+                                                break;
+                                              default:
+                                                Get.toNamed(
+                                                  AppRoutes.basicDetails,
+                                                );
+                                            }
+                                          },
+                                          child: const CustomText(
+                                            title: "Complete Now",
+                                            color: AppColors.blue,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            textDecoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),

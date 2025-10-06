@@ -1,4 +1,3 @@
-
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
@@ -27,9 +26,10 @@ class CustomTextField extends StatelessWidget {
   final TextAlign textAlign;
   final int? maxLength;
   final bool filled;
-   String? Function(String?)? validator;
+  String? Function(String?)? validator;
+  bool? readOnly;
 
-   CustomTextField({
+  CustomTextField({
     super.key,
     required this.title,
     this.hintText = '',
@@ -51,7 +51,8 @@ class CustomTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.maxLength,
     this.filled = false,
-      this.validator,
+    this.validator,
+    this.readOnly,
   });
 
   @override
@@ -64,6 +65,7 @@ class CustomTextField extends StatelessWidget {
         obscureText: isObscured,
         keyboardType: keyboardType,
         onChanged: onChanged,
+        readOnly: readOnly ?? false,
         // onSubmitted: onSubmitted,
         validator: validator,
         style: TextStyle(

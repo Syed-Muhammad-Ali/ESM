@@ -26,28 +26,30 @@ class MatchesDetails extends StatelessWidget {
         // Populate controllers with data (so fields show details)
         matchCtrl.dob.text = match.dob ?? "";
         matchCtrl.age.text = match.age?.toString() ?? "";
-        // matchCtrl.motherTongue.text = match.motherTongue ?? "";
-        // matchCtrl.eatingHabits.text = match.eatingHabits ?? "";
-        // matchCtrl.smokingHabits.text = match.smokingHabits ?? "";
-        // matchCtrl.drinkingHabits.text = match.drinkingHabits ?? "";
-        // matchCtrl.profileCreatedBy.text = match.profileCreatedBy ?? "";
-        // matchCtrl.maritalStatus.text = match.maritalStatus ?? "";
-        // matchCtrl.livesIn.text = match.city ?? "";
-        // matchCtrl.citizen.text = match.citizen ?? "";
+        matchCtrl.motherTongue.text = match.motherTongue ?? "";
+        matchCtrl.eatingHabits.text = match.eatingHabits ?? "";
+        matchCtrl.smokingHabits.text = match.smokingHabits ?? "";
+        matchCtrl.drinkingHabits.text = match.drinkingHabits ?? "";
+        matchCtrl.livesIn.text = match.isChildrenLivingWithYou ?? "";
 
-        // matchCtrl.religion.text = match.religion ?? "";
-        // matchCtrl.caste.text = match.caste ?? "";
-        // matchCtrl.gothram.text = match.gothram ?? "";
-        // matchCtrl.dosham.text = match.dosham ?? "";
+        matchCtrl.religion.text = match.religion ?? "";
+        matchCtrl.caste.text = match.caste ?? "";
+        matchCtrl.subCaste.text = match.subCaste ?? "";
 
-        // matchCtrl.employment.text = match.occupation ?? "";
-        // matchCtrl.degree.text = match.education ?? "";
-        // matchCtrl.university.text = match.university ?? "";
+        matchCtrl.employment.text = match.employedIn ?? "";
+        matchCtrl.annualIncome.text = match.annualIncome ?? "";
 
-        // matchCtrl.familyType.text = match.familyType ?? "";
-        // matchCtrl.parents.text = match.parents ?? "";
-        // matchCtrl.ancestralOrigin.text = match.ancestralOrigin ?? "";
+        matchCtrl.education.text = match.education ?? "";
+        matchCtrl.occupation.text = match.occupation ?? "";
+        matchCtrl.workLocation.text = match.workLocation ?? "";
+        matchCtrl.state.text = match.state ?? "";
+        matchCtrl.city.text = match.city ?? "";
 
+        matchCtrl.maritalStatus.text = match.maritalStatus ?? "";
+        matchCtrl.noOfChildren.text = match.numberOfChildren ?? "";
+        matchCtrl.height.text = match.height ?? "";
+        matchCtrl.familyType.text = match.familyType ?? "";
+        matchCtrl.familyStatus.text = match.familyStatus ?? "";
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,14 +63,14 @@ class MatchesDetails extends StatelessWidget {
                   children: [
                     const BackButton(),
                     const Expanded(flex: 4, child: SearchField()),
-                    AppSizes.sm.widthBox,
-                    const CircleAvatar(
-                      backgroundColor: AppColors.white,
-                      child: Icon(
-                        Icons.favorite_border,
-                        color: Color(0xFFCFCFCF),
-                      ),
-                    ),
+                    // AppSizes.sm.widthBox,
+                    // const CircleAvatar(
+                    //   backgroundColor: AppColors.white,
+                    //   child: Icon(
+                    //     Icons.favorite_border,
+                    //     color: Color(0xFFCFCFCF),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -89,7 +91,7 @@ class MatchesDetails extends StatelessWidget {
                     ),
                     AppSizes.sm.heightBox,
                     CustomText(
-                      title: "No description",
+                      title: match.aboutYourself ?? "No description",
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: const Color(0xFF6D6D6D),
@@ -107,50 +109,42 @@ class MatchesDetails extends StatelessWidget {
                       title: "D.O.B",
                       controller: matchCtrl.dob,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Age",
                       controller: matchCtrl.age,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Mother Tongue",
                       controller: matchCtrl.motherTongue,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Eating Habits",
                       controller: matchCtrl.eatingHabits,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Smoking Habits",
                       controller: matchCtrl.smokingHabits,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Drinking Habits",
                       controller: matchCtrl.drinkingHabits,
                       filled: true,
+                      readOnly: true,
                     ),
+
                     CustomTextField(
-                      title: "Profile Created By",
-                      controller: matchCtrl.profileCreatedBy,
-                      filled: true,
-                    ),
-                    CustomTextField(
-                      title: "Marital Status",
-                      controller: matchCtrl.maritalStatus,
-                      filled: true,
-                    ),
-                    CustomTextField(
-                      title: "Lives In",
+                      title: "Children Lives In",
                       controller: matchCtrl.livesIn,
-                      filled: true,
-                    ),
-                    CustomTextField(
-                      title: "Citizen",
-                      controller: matchCtrl.citizen,
                       filled: true,
                     ),
 
@@ -166,23 +160,26 @@ class MatchesDetails extends StatelessWidget {
                       title: "Religion",
                       controller: matchCtrl.religion,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
                       title: "Caste",
                       controller: matchCtrl.caste,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
-                      title: "Gothram",
-                      controller: matchCtrl.gothram,
+                      title: "Sub Caste",
+                      controller: matchCtrl.subCaste,
                       filled: true,
-                    ),
-                    CustomTextField(
-                      title: "Dosham",
-                      controller: matchCtrl.dosham,
-                      filled: true,
+                      readOnly: true,
                     ),
 
+                    // CustomTextField(
+                    //   title: "Dosham",
+                    //   controller: matchCtrl.dosham,
+                    //   filled: true,
+                    // ),
                     AppSizes.spaceBtwSections.heightBox,
 
                     // Professional + Education
@@ -195,6 +192,13 @@ class MatchesDetails extends StatelessWidget {
                       title: "Employment",
                       controller: matchCtrl.employment,
                       filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "Annual Income",
+                      controller: matchCtrl.annualIncome,
+                      filled: true,
+                      readOnly: true,
                     ),
 
                     AppSizes.spaceBtwItems.heightBox,
@@ -204,14 +208,34 @@ class MatchesDetails extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                     CustomTextField(
-                      title: "Degree",
-                      controller: matchCtrl.degree,
+                      title: "Highest Education:",
+                      controller: matchCtrl.education,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
-                      title: "University",
-                      controller: matchCtrl.university,
+                      title: "Occupation",
+                      controller: matchCtrl.occupation,
                       filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "Work Location",
+                      controller: matchCtrl.workLocation,
+                      filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "State",
+                      controller: matchCtrl.state,
+                      filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "City",
+                      controller: matchCtrl.city,
+                      filled: true,
+                      readOnly: true,
                     ),
 
                     AppSizes.spaceBtwSections.heightBox,
@@ -223,19 +247,34 @@ class MatchesDetails extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                     CustomTextField(
+                      title: "Marital Status",
+                      controller: matchCtrl.maritalStatus,
+                      filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "No. of  Children",
+                      controller: matchCtrl.noOfChildren,
+                      filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
+                      title: "Height",
+                      controller: matchCtrl.height,
+                      filled: true,
+                      readOnly: true,
+                    ),
+                    CustomTextField(
                       title: "Family Type",
                       controller: matchCtrl.familyType,
                       filled: true,
+                      readOnly: true,
                     ),
                     CustomTextField(
-                      title: "Parents",
-                      controller: matchCtrl.parents,
+                      title: "Family Status",
+                      controller: matchCtrl.familyStatus,
                       filled: true,
-                    ),
-                    CustomTextField(
-                      title: "Ancestral Origin",
-                      controller: matchCtrl.ancestralOrigin,
-                      filled: true,
+                      readOnly: true,
                     ),
                   ],
                 ),

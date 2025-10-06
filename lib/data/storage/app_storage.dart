@@ -63,4 +63,10 @@ class AppStorage {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  static Future<void> removeLocalUser(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(key);
+    userData.value = UserModel();
+  }
 }

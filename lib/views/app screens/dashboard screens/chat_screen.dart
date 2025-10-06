@@ -4,10 +4,10 @@ import 'package:european_single_marriage/core/extensions/size_box_extension.dart
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/constant/app_images.dart';
 import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
+import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/model/chat_model.dart';
 import 'package:european_single_marriage/routes/app_routes.dart';
 import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/chat_text_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -61,24 +61,36 @@ class ChatScreen extends StatelessWidget {
                       children: [
                         ListTile(
                           onTap: () {
-                            // ✅ Navigate to message screen
+                            print("chatId: ${chat.chatId}");
+                            print("peerId: ${chat.peerId}");
+                            print("peerImage: ${chat.peerImage}");
+                            print("peerName: ${chat.peerName}");
+                            print("peerName: ${chat.lastMessage}");
+
+                            if (chat.chatId.isEmpty || chat.peerId.isEmpty) {
+                              Utils.snackBar(
+                                "Error",
+                                "Invalid chat data.",
+                                AppColors.red,
+                              );
+                              return;
+                            }
+
                             Get.to(
                               () => MessageTextPage(
                                 chatId: chat.chatId,
-                                userName: chat.name,
-                                userImage: chat.image,
-                                receiverId: chat.chatId.replaceAll(
-                                  FirebaseAuth.instance.currentUser!.uid,
-                                  "",
-                                ),
+                                receiverId: chat.peerId,
+                                userName: chat.peerName,
+                                userImage: chat.peerImage,
                               ),
                             );
                           },
+
                           leading: CircleAvatar(
                             radius: 30,
                             backgroundImage:
-                                chat.image.isNotEmpty
-                                    ? NetworkImage(chat.image)
+                                chat.peerImage.isNotEmpty
+                                    ? NetworkImage(chat.peerImage)
                                     : AssetImage(AppImages.imageURL)
                                         as ImageProvider,
                           ),
@@ -86,12 +98,12 @@ class ChatScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomText(
-                                title: chat.name,
+                                title: chat.peerName,
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
                               CustomText(
-                                title: chat.time,
+                                title: chat.last_message_time,
                                 color: const Color(0xFF999999),
                                 fontSize: (chat.unreadCount > 0) ? 14 : 12,
                                 fontWeight:
@@ -124,7 +136,7 @@ class ChatScreen extends StatelessWidget {
                                           ),
                                         ),
                                       TextSpan(
-                                        text: chat.message,
+                                        text: chat.lastMessage,
                                         style: const TextStyle(
                                           color: Color(0xFF999999),
                                           fontSize: 14,

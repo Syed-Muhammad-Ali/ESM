@@ -20,7 +20,6 @@ class AddFriendController extends GetxController with NetworkAwareController {
   /// --- Model  --- ///
   final RxList<UserModel> userList = <UserModel>[].obs;
 
-
   /// --- Fetch User for Friend --- ///
   Future<void> fetchUsersForFriends() async {
     if (!await checkConnection(
@@ -41,7 +40,6 @@ class AddFriendController extends GetxController with NetworkAwareController {
           .getDataFromFirestore<List<UserModel>>(
             collection: AppCollections.users,
             fromJson: (jsonList) {
-              log("📥 Raw Firestore Data: $jsonList");
               return (jsonList as List)
                   .map(
                     (json) => UserModel.fromJson(json as Map<String, dynamic>),
@@ -52,7 +50,6 @@ class AddFriendController extends GetxController with NetworkAwareController {
           );
 
       if (users != null && users.isNotEmpty) {
-        log("✅ Users fetched: ${users.length}");
         for (var user in users) {
           log("👤 User -> ID: ${user.id}, Name: ${user.name}");
         }

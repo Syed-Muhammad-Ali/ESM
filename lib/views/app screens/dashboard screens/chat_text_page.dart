@@ -41,8 +41,18 @@ class _MessageTextPageState extends State<MessageTextPage> {
   @override
   void initState() {
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   messageCtrl.markMessagesAsRead(widget.chatId!, widget.receiverId!);
+    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      messageCtrl.markMessagesAsRead(widget.chatId!, widget.receiverId!);
+      if (widget.chatId != null &&
+          widget.chatId!.isNotEmpty &&
+          widget.receiverId != null &&
+          widget.receiverId!.isNotEmpty) {
+        messageCtrl.markMessagesAsRead(widget.chatId!, widget.receiverId!);
+      } else {
+        debugPrint("⚠️ Chat ID or Receiver ID missing. Cannot mark as read.");
+      }
     });
   }
 
@@ -284,6 +294,7 @@ class _MessageTextPageState extends State<MessageTextPage> {
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];
+            
             final isSender = message.senderId == senderId;
 
             String? dayLabel;
