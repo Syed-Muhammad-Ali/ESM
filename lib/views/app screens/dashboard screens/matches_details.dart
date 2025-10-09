@@ -5,14 +5,30 @@ import 'package:european_single_marriage/core/extensions/size_box_extension.dart
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
 import 'package:european_single_marriage/views/screens%20widgets/home%20Widget/match_card.dart';
-import 'package:european_single_marriage/views/screens%20widgets/home%20Widget/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MatchesDetails extends StatelessWidget {
-  final matchCtrl = Get.find<MatchesController>();
+class MatchesDetails extends StatefulWidget {
+  const MatchesDetails({super.key});
 
-  MatchesDetails({super.key});
+  @override
+  State<MatchesDetails> createState() => _MatchesDetailsState();
+}
+
+class _MatchesDetailsState extends State<MatchesDetails> {
+  final matchCtrl = Get.find<MatchesController>();
+  @override
+  void initState() {
+    super.initState();
+    _onProfileOpened();
+  }
+
+  void _onProfileOpened() {
+    final match = matchCtrl.matchDetails.value;
+    if (match != null) {
+      matchCtrl.incrementViewCount(match);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +71,15 @@ class MatchesDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.only(left: 12, right: 12, top: 30),
+                padding: const EdgeInsets.only(left: 12, right: 12, top: 50),
                 width: double.infinity,
                 color: AppColors.appBarColor,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const BackButton(),
-                    const Expanded(flex: 4, child: SearchField()),
+                    AppSizes.lg.heightBox,
+                    // const Expanded(flex: 4, child: SearchField()),
                     // AppSizes.sm.widthBox,
                     // const CircleAvatar(
                     //   backgroundColor: AppColors.white,

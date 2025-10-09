@@ -63,50 +63,55 @@ class _AddFriendPageState extends State<AddFriendPage> {
                 itemCount: addFrindCtrl.userList.length,
                 itemBuilder: (context, index) {
                   final user = addFrindCtrl.userList[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundImage:
-                          (user.userProfilePic != null &&
-                                  user.userProfilePic!.isNotEmpty)
-                              ? NetworkImage(user.userProfilePic!)
-                              : AssetImage(AppImages.imageURL) as ImageProvider,
-                    ),
-                    title: CustomText(
-                      title: user.name ?? "Unknown",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                    onTap: () async {
-                      final currentUserId = await AppStorage.getUserID();
-                      if (currentUserId == null) {
-                        log("❌ No current user ID found!");
-                        Utils.snackBar(
-                          "Error",
-                          "User not logged in properly",
-                          AppColors.red,
-                        );
-                        return;
-                      }
-
-                      final chatId = await messageCtrl.createUniqueId(
-                        senderId: currentUserId,
-                        receiverId: user.id!,
-                      );
-
-                      Get.to(
-                        () => MessageTextPage(
-                          chatId: chatId,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 18),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30,
+                        backgroundImage:
+                            (user.userProfilePic != null &&
+                                    user.userProfilePic!.isNotEmpty)
+                                ? NetworkImage(user.userProfilePic!)
+                                : AssetImage(AppImages.imageURL)
+                                    as ImageProvider,
+                      ),
+                      title: CustomText(
+                        title: user.name ?? "Unknown",
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                      onTap: () async {
+                        final currentUserId = await AppStorage.getUserID();
+                        if (currentUserId == null) {
+                          log("❌ No current user ID found!");
+                          Utils.snackBar(
+                            "Error",
+                            "User not logged in properly",
+                            AppColors.red,
+                          );
+                          return;
+                        }
+                        final chatId = await messageCtrl.createUniqueId(
+                          senderId: currentUserId,
                           receiverId: user.id!,
-                          userName: user.name ?? "Unknown",
-                          userImage:
-                              (user.userProfilePic != null &&
-                                      user.userProfilePic!.isNotEmpty)
-                                  ? user.userProfilePic!
-                                  : AppImages.imageURL,
-                        ),
-                      );
-                    },
+                        );
+
+                        await messageCtrl.incrementChatCount(user.id!);
+
+                        Get.to(
+                          () => MessageTextPage(
+                            chatId: chatId,
+                            receiverId: user.id!,
+                            userName: user.name ?? "Unknown",
+                            userImage:
+                                (user.userProfilePic != null &&
+                                        user.userProfilePic!.isNotEmpty)
+                                    ? user.userProfilePic!
+                                    : AppImages.imageURL,
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               );

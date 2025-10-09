@@ -49,6 +49,17 @@ class UserModel {
   Timestamp? createdAt;
   Timestamp? updatedAt;
 
+  // 👇 New fields for profile views
+  int? viewCount;
+  List<String>? viewedBy;
+
+  int? interestedCount;
+  List<String>? interestedUsers;
+  List<String>? notInterestedUsers;
+
+  int? chatCount;
+  List<String>? chattedUsers;
+
   UserModel({
     this.id,
     this.name,
@@ -87,6 +98,13 @@ class UserModel {
     this.profileCompletion,
     this.createdAt,
     this.updatedAt,
+    this.viewCount,
+    this.viewedBy,
+    this.interestedCount,
+    this.interestedUsers,
+    this.notInterestedUsers,
+    this.chatCount,
+    this.chattedUsers,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -139,6 +157,26 @@ class UserModel {
 
     createdAt = json['createdAt'] is Timestamp ? json['createdAt'] : null;
     updatedAt = json['updatedAt'] is Timestamp ? json['updatedAt'] : null;
+
+    viewCount = json['viewCount'] ?? 0;
+    viewedBy =
+        json['viewedBy'] != null ? List<String>.from(json['viewedBy']) : [];
+
+    interestedCount = json['interestedCount'] ?? 0;
+    interestedUsers =
+        json['interestedUsers'] != null
+            ? List<String>.from(json['interestedUsers'])
+            : [];
+    notInterestedUsers =
+        json['notInterestedUsers'] != null
+            ? List<String>.from(json['notInterestedUsers'])
+            : [];
+
+    chatCount = json['chatCount'] ?? 0;
+    chattedUsers =
+        json['chattedUsers'] != null
+            ? List<String>.from(json['chattedUsers'])
+            : [];
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
@@ -185,6 +223,15 @@ class UserModel {
 
     data['createdAt'] = createdAt?.toDate().toIso8601String();
     data['updatedAt'] = updatedAt?.toDate().toIso8601String();
+
+    data['viewCount'] = viewCount;
+    data['viewedBy'] = viewedBy;
+    data['interestedCount'] = interestedCount;
+    data['interestedUsers'] = interestedUsers;
+    data['notInterestedUsers'] = notInterestedUsers;
+
+    data['chatCount'] = chatCount;
+    data['chattedUsers'] = chattedUsers;
 
     return data;
   }

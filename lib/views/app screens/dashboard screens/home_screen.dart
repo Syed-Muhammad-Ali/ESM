@@ -40,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Obx(() {
           if (homeCtrl.rxRequestStatus.value == Status.LOADING) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.appBarColor,));
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.appBarColor),
+            );
           }
           final currentUser = homeCtrl.currentUser.value;
 
@@ -262,42 +264,91 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           AppSizes.spaceBtwItems.heightBox,
+                          StreamBuilder<UserModel?>(
+                            stream: homeCtrl.getUserStream(currentUser.id!),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.appBarColor,
+                                  ),
+                                );
+                              }
 
-                          GridView.count(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 1.2,
-                            children: [
-                              statCard(
-                                "Viewed You",
-                                users.viewedYou,
-                                Color(0xFF89A6F0),
-                                "assets/images/eye.png",
-                              ),
-                              statCard(
-                                "Sent Request",
-                                users.sentRequests,
-                                Color(0xFFFFC969),
-                                "assets/images/send.png",
-                              ),
-                              statCard(
-                                "Received Request",
-                                users.receivedRequests,
-                                Color(0xFFFC72AA),
-                                "assets/images/rreceivedequest.png",
-                              ),
-                              statCard(
-                                "Request Accepted",
-                                users.acceptedRequests,
-                                Color(0xFF47E76F),
-                                "assets/images/tick.png",
-                              ),
-                            ],
+                              final liveUser = snapshot.data!;
+                              final viewCount = liveUser.viewCount ?? 0;
+
+                              return GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
+                                childAspectRatio: 1.2,
+                                children: [
+                                  statCard(
+                                    "Viewed You",
+                                    viewCount, // 👈 live count here!
+                                    const Color(0xFF89A6F0),
+                                    "assets/images/eye.png",
+                                  ),
+                                  statCard(
+                                    "Chat Request",
+                                    currentUser.chatCount ?? 0,
+                                    const Color(0xFFFFC969),
+                                    "assets/images/send.png",
+                                  ),
+                                  statCard(
+                                    "Received Request",
+                                    users.receivedRequests,
+                                    const Color(0xFFFC72AA),
+                                    "assets/images/rreceivedequest.png",
+                                  ),
+                                  statCard(
+                                    "Interested User",
+                                    currentUser.interestedCount ?? 0,
+                                    const Color(0xFF47E76F),
+                                    "assets/images/tick.png",
+                                  ),
+                                ],
+                              );
+                            },
                           ),
 
+                          // GridView.count(
+                          //   physics: const NeverScrollableScrollPhysics(),
+                          //   shrinkWrap: true,
+                          //   crossAxisCount: 2,
+                          //   crossAxisSpacing: 12,
+                          //   mainAxisSpacing: 12,
+                          //   childAspectRatio: 1.2,
+                          //   children: [
+                          //     statCard(
+                          //       "Viewed You",
+                          //       users.viewedYou,
+                          //       Color(0xFF89A6F0),
+                          //       "assets/images/eye.png",
+                          //     ),
+                          //     statCard(
+                          //       "Sent Request",
+                          //       users.sentRequests,
+                          //       Color(0xFFFFC969),
+                          //       "assets/images/send.png",
+                          //     ),
+                          //     statCard(
+                          //       "Received Request",
+                          //       users.receivedRequests,
+                          //       Color(0xFFFC72AA),
+                          //       "assets/images/rreceivedequest.png",
+                          //     ),
+                          //     statCard(
+                          //       "Request Accepted",
+                          //       users.acceptedRequests,
+                          //       Color(0xFF47E76F),
+                          //       "assets/images/tick.png",
+                          //     ),
+                          //   ],
+                          // ),
                           AppSizes.spaceBtwItems.heightBox,
                           RecomendedCardWidget(
                             title: "Recommended Matches",

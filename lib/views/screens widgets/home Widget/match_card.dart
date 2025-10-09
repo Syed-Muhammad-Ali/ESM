@@ -5,6 +5,7 @@ import 'package:european_single_marriage/core/common/custom_toggle_selector.dart
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
+import 'package:european_single_marriage/data/storage/app_storage.dart';
 import 'package:european_single_marriage/model/user_model.dart';
 import 'package:european_single_marriage/routes/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,29 @@ class MatchCard extends StatefulWidget {
 class _MatchCardState extends State<MatchCard> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
+  String? _selectedInterest;
+  @override
+  void initState() {
+    super.initState();
+    _setInitialInterest();
+  }
+
+  Future<void> _setInitialInterest() async {
+    final currentUserId = await AppStorage.getUserID();
+    if (currentUserId == null) return;
+
+    final match = widget.match;
+
+    if (match.interestedUsers?.contains(currentUserId) ?? false) {
+      _selectedInterest = 'Yes, Interested';
+    } else if (match.notInterestedUsers?.contains(currentUserId) ?? false) {
+      _selectedInterest = 'No';
+    } else {
+      _selectedInterest = ''; // not selected yet
+    }
+
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -43,6 +67,28 @@ class _MatchCardState extends State<MatchCard> {
         Get.toNamed(AppRoutes.matchesDetails);
       },
 
+      // fun: () async {
+      //   final matchCtrl = Get.find<MatchesController>();
+      //   final firebaseService = Get.find<FirebaseService>();
+
+      //   // The user whose profile is being viewed
+      //   final viewedUser = widget.match;
+
+      //   // The currently logged-in user (viewer)
+      //   final currentUserId = await AppStorage.getUserID();
+
+      //   // Prevent self-view
+      //   if (currentUserId != null && viewedUser.id != currentUserId) {
+      //     await firebaseService.incrementProfileView(
+      //       collection: AppCollections.users,
+      //       viewedUserId: viewedUser.id!,
+      //       viewerUserId: currentUserId,
+      //     );
+      //   }
+
+      //   matchCtrl.matchDetails.value = viewedUser;
+      //   Get.toNamed(AppRoutes.matchesDetails);
+      // },
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       cir: 10,
@@ -224,13 +270,19 @@ class _MatchCardState extends State<MatchCard> {
                 CustomToggleSelector(
                   title: "Interested with this profile?",
                   options: ['Yes, Interested', 'No'],
-                  selectedValue:
-                      Get.find<MatchesController>().profileInterested,
-                  onChanged:
-                      (value) =>
-                          Get.find<MatchesController>()
-                              .profileInterested
-                              .value = value,
+                  selectedValue: (_selectedInterest ?? '').obs,
+                  onChanged: (value) async {
+                    setState(() {
+                      _selectedInterest = value;
+                    });
+
+                    final matchCtrl = Get.find<MatchesController>();
+                    final isYes = value == 'Yes, Interested';
+                    await matchCtrl.markInterest(
+                      targetUser: widget.match,
+                      isInterested: isYes,
+                    );
+                  },
                 ),
               ],
             ),

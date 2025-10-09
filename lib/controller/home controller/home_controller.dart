@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:european_single_marriage/controller/network_aware_controller.dart';
 import 'package:european_single_marriage/core/utils/constant/app_collections.dart';
 import 'package:european_single_marriage/core/utils/constant/app_images.dart';
@@ -158,6 +159,17 @@ class HomeController extends GetxController with NetworkAwareController {
       errorMessage.value = "Failed to fetch nearby users: $error";
       setRxRequestStatus(Status.ERROR);
     }
+  }
+
+  Stream<UserModel?> getUserStream(String userId) {
+    return FirebaseFirestore.instance
+        .collection(AppCollections.users)
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) {
+          if (!snapshot.exists) return null;
+          return UserModel.fromJson(snapshot.data()!);
+        });
   }
 
   /// ---------------- SEARCH FUNCTION ----------------

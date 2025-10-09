@@ -100,7 +100,21 @@ class MessageController extends GetxController {
     };
 
     // ✅ Write message in ONE place (sender inbox)
-    await senderInboxRef.collection('messages').add(message);
+    // await senderInboxRef.collection('messages').add(message);
+    await Future.wait([
+      senderInboxRef.collection('messages').add(message),
+      receiverInboxRef.collection('messages').add(message),
+    ]);
+
+    final lastMessageUpdate = {
+      'last_message': message,
+      'last_message_time': timestamp,
+    };
+
+    await Future.wait([
+      senderInboxRef.update(lastMessageUpdate),
+      receiverInboxRef.update(lastMessageUpdate),
+    ]);
 
     // ✅ Update sender inbox (no unread count for sender)
     await senderInboxRef.set({
@@ -318,5 +332,33 @@ class MessageController extends GetxController {
         .doc(chatId);
 
     await receiverInboxRef.set({"isRead": true}, SetOptions(merge: true));
+  }
+
+  Future<void> incrementChatCount(String targetUserId) async {
+    try {
+      final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      if (currentUserId == targetUserId) return;
+
+      final userRef = FirebaseFirestore.instance
+          .collection(AppCollections.users)
+          .doc(targetUserId);
+
+      final snapshot = await userRef.get();
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data()!;
+      List<String> chattedUsers = List<String>.from(data['chattedUsers'] ?? []);
+
+      if (!chattedUsers.contains(currentUserId)) {
+        chattedUsers.add(currentUserId);
+        await userRef.update({
+          'chattedUsers': chattedUsers,
+          'chatCount': chattedUsers.length,
+        });
+        log("✅ Chat count incremented for user: $targetUserId");
+      }
+    } catch (e) {
+      log("⚠️ Error updating chat count: $e");
+    }
   }
 }

@@ -1,10 +1,12 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:european_single_marriage/controller/network_aware_controller.dart';
 import 'package:european_single_marriage/core/utils/constant/app_collections.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/data/response/status.dart';
+import 'package:european_single_marriage/data/storage/app_storage.dart';
 import 'package:european_single_marriage/model/tab_items.dart';
 import 'package:european_single_marriage/model/user_model.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
@@ -429,6 +431,73 @@ class MatchesController extends GetxController with NetworkAwareController {
       log("error : $error");
       setRxRequestStatus(Status.ERROR);
       Utils.snackBar("Error", errorMessage.value, AppColors.red);
+    }
+  }
+
+  Future<void> incrementViewCount(UserModel viewedUser) async {
+    try {
+      final currentUserId = await AppStorage.getUserID();
+      if (currentUserId == null) return;
+
+      // Prevent self-view
+      if (viewedUser.id == currentUserId) return;
+
+      await firebaseServices.incrementProfileView(
+        collection: AppCollections.users,
+        viewedUserId: viewedUser.id!,
+        viewerUserId: currentUserId,
+      );
+
+      log("✅ View count updated for user: ${viewedUser.name}");
+    } catch (e) {
+      log("⚠️ Failed to increment view count: $e");
+    }
+  }
+
+  Future<void> markInterest({
+    required UserModel targetUser,
+    required bool isInterested,
+  }) async {
+    try {
+      final currentUserId = await AppStorage.getUserID();
+      if (currentUserId == null || targetUser.id == currentUserId) return;
+
+      final userRef = FirebaseFirestore.instance
+          .collection(AppCollections.users)
+          .doc(targetUser.id);
+
+      final snapshot = await userRef.get();
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data()!;
+      List<String> interestedUsers = List<String>.from(
+        data['interestedUsers'] ?? [],
+      );
+      List<String> notInterestedUsers = List<String>.from(
+        data['notInterestedUsers'] ?? [],
+      );
+
+      if (isInterested) {
+        if (!interestedUsers.contains(currentUserId)) {
+          interestedUsers.add(currentUserId);
+          notInterestedUsers.remove(currentUserId);
+        }
+      } else {
+        if (!notInterestedUsers.contains(currentUserId)) {
+          notInterestedUsers.add(currentUserId);
+          interestedUsers.remove(currentUserId);
+        }
+      }
+
+      await userRef.update({
+        'interestedUsers': interestedUsers,
+        'notInterestedUsers': notInterestedUsers,
+        'interestedCount': interestedUsers.length,
+      });
+
+      log("✅ Interest updated for ${targetUser.name}");
+    } catch (e) {
+      log("⚠️ Error updating interest: $e");
     }
   }
 
