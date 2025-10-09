@@ -280,7 +280,7 @@ class _MessageTextPageState extends State<MessageTextPage> {
       stream: messageCtrl.getMessages(widget.chatId!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: AppColors.appBarColor,));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("No messages yet..."));

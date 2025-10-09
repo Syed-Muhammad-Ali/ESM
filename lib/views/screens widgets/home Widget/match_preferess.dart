@@ -1,4 +1,4 @@
-import 'package:european_single_marriage/controller/home%20controller/match_preferences_controller%20.dart';
+import 'package:european_single_marriage/controller/home%20controller/matches_controller.dart';
 import 'package:european_single_marriage/core/common/custam_container.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
@@ -9,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MatchPreferencesBottomSheet extends StatelessWidget {
-  final controller = Get.put(MatchPreferencesController());
+  final controller = Get.put(MatchesController());
+  final int initialTabIndex;
 
-  MatchPreferencesBottomSheet({super.key});
+  MatchPreferencesBottomSheet({super.key, required this.initialTabIndex});
 
   @override
   Widget build(BuildContext context) {
+    controller.selectTab(initialTabIndex);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -91,9 +93,15 @@ class MatchPreferencesBottomSheet extends StatelessWidget {
                   child: Obx(() {
                     switch (controller.selectedTab.value) {
                       case 0:
-                        return matchPreferences();
-                      case 1:
                         return basicDetails();
+                      case 1:
+                        return regionDetails();
+                      case 2:
+                        return professionalDetails();
+                      case 3:
+                        return locationDetails();
+                      case 4:
+                        return familyDetails();
                       default:
                         return Center(child: Text(""));
                     }
@@ -107,23 +115,23 @@ class MatchPreferencesBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget matchPreferences() {
-    final controller = Get.find<MatchPreferencesController>();
-    return Obx(
-      () => ListView(
-        children:
-            controller.matchFilters.keys.map((item) {
-              return CheckboxListTile(
-                activeColor: AppColors.primaryColor,
-                title: CustomText(title: item, fontSize: 14),
-                value: controller.matchFilters[item],
-                onChanged: (value) => controller.toggleFilter(item, value),
-                controlAffinity: ListTileControlAffinity.leading,
-              );
-            }).toList(),
-      ),
-    );
-  }
+  // Widget matchPreferences() {
+  //   final controller = Get.find<MatchPreferencesController>();
+  //   return Obx(
+  //     () => ListView(
+  //       children:
+  //           controller.matchFilters.keys.map((item) {
+  //             return CheckboxListTile(
+  //               activeColor: AppColors.primaryColor,
+  //               title: CustomText(title: item, fontSize: 14),
+  //               value: controller.matchFilters[item],
+  //               onChanged: (value) => controller.toggleFilter(item, value),
+  //               controlAffinity: ListTileControlAffinity.leading,
+  //             );
+  //           }).toList(),
+  //     ),
+  //   );
+  // }
 
   Widget basicDetails() {
     return Padding(
@@ -158,6 +166,18 @@ class MatchPreferencesBottomSheet extends StatelessWidget {
             ),
             AppSizes.spaceBtwItems.heightBox,
             CustomText(
+              title: "Gender",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [chip("Male"), chip("Female")],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
               title: "Marital Status:",
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -166,7 +186,298 @@ class MatchPreferencesBottomSheet extends StatelessWidget {
             Wrap(
               spacing: 10,
               runSpacing: 10,
-              children: [chip("Never Married"), chip("Divorced")],
+              children: [chip("Married"), chip("Unmarried"), chip("Divorced")],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget regionDetails() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 17),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Gender",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip("Islam"),
+                chip("Christianity"),
+                chip("Hinduism"),
+                chip("Buddhism"),
+                chip("Sikhism"),
+                chip("Judaism"),
+                chip("Bahá'í Faith"),
+                chip("Jainism"),
+                chip("Zoroastrianism"),
+                chip("Taoism"),
+                chip("Shinto"),
+                chip("Confucianism"),
+                chip("Agnostic"),
+                chip("Atheist"),
+                chip("Spiritual but not religious"),
+                chip("Paganism"),
+                chip("Animism"),
+                chip("Druidism"),
+                chip("Rastafarianism"),
+                chip("Unitarian Universalism"),
+                chip("Prefer not to say"),
+                chip("Other"),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "No.Of Children",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('0'),
+                chip('1'),
+                chip('2'),
+                chip('3'),
+                chip('4'),
+                chip('5'),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Is Children living with you?",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [chip('Yes'), chip('No')],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget professionalDetails() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 17),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Highest Education:",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('Primary'),
+                chip('Middle'),
+                chip('Matric'),
+                chip('Inter'),
+                chip('Bachelor’s'),
+                chip('Master’s'),
+                chip('M.Phil'),
+                chip('Ph.D.'),
+                chip('Diploma'),
+                chip('Other'),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Employed In:",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('Government'),
+                chip('Private Sector'),
+                chip('Self-employed'),
+                chip('Business Owner'),
+                chip('Non-profit / NGO'),
+                chip('Freelancer'),
+                chip('Student'),
+                chip('Retired'),
+                chip('Unemployed'),
+                chip('Other'),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Occupation",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('Student'),
+                chip('Teacher'),
+                chip('Engineer'),
+                chip('Doctor'),
+                chip('Nurse'),
+                chip('Software Developer'),
+                chip('Graphic Designer'),
+                chip('Content Writer'),
+                chip('Lecturer'),
+                chip('Fashion Designer'),
+                chip('Beautician'),
+                chip('Receptionist'),
+                chip('HR Manager'),
+                chip('Banker'),
+                chip('Air Hostess'),
+                chip('Businessman'),
+                chip('Businesswoman'),
+                chip('Freelancer'),
+                chip('Government Employee'),
+                chip('Private Employee'),
+                chip('Police Officer'),
+                chip('Army Officer'),
+                chip('Driver'),
+                chip('Shopkeeper'),
+                chip('Farmer'),
+                chip('Laborer'),
+                chip('Housewife'),
+                chip('Unemployed'),
+                chip('Other'),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Annual Income",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('Less than 1 Lakh'),
+                chip('1 - 3 Lakh'),
+                chip('3 - 5 Lakh'),
+                chip('5 - 10 Lakh'),
+                chip('10 - 20 Lakh'),
+                chip('20+ Lakh'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget locationDetails() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 17),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Work Location",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [chip('Remote'), chip('On-site'), chip('Hybrid')],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget familyDetails() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 17),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Family Status",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('Middle Class'),
+                chip('Upper Class'),
+                chip('Rich'),
+                chip('Normal'),
+              ],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Family Type",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [chip('Joint'), chip('Nuclear')],
+            ),
+            AppSizes.spaceBtwItems.heightBox,
+            CustomText(
+              title: "Family Values",
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            AppSizes.sm.heightBox,
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                chip('1'),
+                chip('2'),
+                chip('3'),
+                chip('4'),
+                chip('5'),
+                chip('6'),
+                chip('7'),
+                chip('8'),
+                chip('9'),
+                chip('10'),
+              ],
             ),
           ],
         ),
@@ -175,7 +486,7 @@ class MatchPreferencesBottomSheet extends StatelessWidget {
   }
 
   Widget chip(String label) {
-    final MatchPreferencesController controller = Get.find();
+    final MatchesController controller = Get.find();
     return Obx(() {
       final isSelected = controller.selectedHeights.contains(label);
       return InkWell(

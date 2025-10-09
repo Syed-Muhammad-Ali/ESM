@@ -8,7 +8,6 @@ import 'package:european_single_marriage/views/app%20screens/auth%20screens/regi
 import 'package:european_single_marriage/views/app%20screens/auth%20screens/register/religion_details.dart';
 import 'package:european_single_marriage/views/app%20screens/auth%20screens/splash_screen.dart';
 import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/add_friend_page.dart';
-import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/chat_text_page.dart';
 import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/dashboard.dart';
 import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/edit_profile.dart';
 import 'package:european_single_marriage/views/app%20screens/dashboard%20screens/help_support_screen.dart';

@@ -43,7 +43,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         switch (matchCtrl.rxRequestStatus.value) {
           case Status.LOADING:
             return Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
+              child: CircularProgressIndicator(color: AppColors.appBarColor),
             );
 
           case Status.ERROR:
@@ -86,24 +86,86 @@ class _MatchesScreenState extends State<MatchesScreen> {
                         horizontal: AppSizes.paddingSH,
                         vertical: AppSizes.paddingSV,
                       ),
-                      child: SearchField(),
-                    ),
-                  ),
-                  AppSizes.spaceBtwItems.heightBox,
-                  SelectedTabBar(tabs: matchCtrl.tabs),
-                  AppSizes.spaceBtwItems.heightBox,
-                  Expanded(
-                    child: Obx(
-                      () => ListView.builder(
-                        itemCount: matchCtrl.usersData.value.length,
-                        padding: const EdgeInsets.all(12),
-                        itemBuilder: (context, index) {
-                          final match = matchCtrl.usersData.value[index];
-                          return MatchCard(match: match);
-                        },
+                      child: SearchField(
+                        controller: matchCtrl.searchController,
+
+                        onChanged: (value) => matchCtrl.searchUsers(value),
                       ),
                     ),
                   ),
+
+                  AppSizes.spaceBtwItems.heightBox,
+                  SelectedTabBar(tabs: matchCtrl.tableTabs),
+                  AppSizes.spaceBtwItems.heightBox,
+                  Expanded(
+                    child: Obx(() {
+                      final users = matchCtrl.filteredUsers.value;
+
+                      if (matchCtrl.rxRequestStatus.value == Status.LOADING) {
+                        return const Center(child: CircularProgressIndicator(color: AppColors.appBarColor,));
+                      }
+
+                      if (users.isEmpty) {
+                        final query = matchCtrl.searchQuery.value;
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.search_off_rounded,
+                                size: 80,
+                                color: Color(0xFFB0B0B0),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                query.isNotEmpty
+                                    ? "No profiles found matching \"$query\""
+                                    : "No profiles match your current filters",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF4A4A4A),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                query.isNotEmpty
+                                    ? "Try searching with a different name or adjust your filters."
+                                    : "Try adjusting your filters to explore more potential matches.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: users.length,
+                        padding: const EdgeInsets.all(12),
+                        itemBuilder: (context, index) {
+                          final match = users[index];
+                          return MatchCard(match: match);
+                        },
+                      );
+                    }),
+                  ),
+
+                  // Expanded(
+                  //   child: Obx(
+                  //     () => ListView.builder(
+                  //       itemCount:  matchCtrl.filteredUsers.value.length,
+                  //       padding: const EdgeInsets.all(12),
+                  //       itemBuilder: (context, index) {
+                  //         final match = matchCtrl.filteredUsers.value[index];
+                  //         return MatchCard(match: match);
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             );

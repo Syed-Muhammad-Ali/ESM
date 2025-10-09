@@ -11,7 +11,6 @@ import 'package:european_single_marriage/core/utils/constant/app_keys.dart';
 import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/data/response/status.dart';
 import 'package:european_single_marriage/data/storage/app_storage.dart';
-import 'package:european_single_marriage/model/user_model.dart';
 import 'package:european_single_marriage/routes/app_routes.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
 import 'package:file_picker/file_picker.dart';

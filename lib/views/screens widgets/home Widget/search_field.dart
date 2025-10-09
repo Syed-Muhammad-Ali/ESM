@@ -29,7 +29,6 @@ class SearchField extends StatelessWidget {
           child: TextField(
             controller: controller,
             onChanged: onChanged,
-
             decoration: const InputDecoration(
               hintText: "Search by criteria",
               border: InputBorder.none,

@@ -1,11 +1,11 @@
-import 'package:european_single_marriage/controller/home%20controller/match_preferences_controller%20.dart';
+import 'package:european_single_marriage/controller/home%20controller/matches_controller.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 Widget ageRangeSlider() {
-  final controller = Get.find<MatchPreferencesController>();
+  final controller = Get.find<MatchesController>();
 
   return Obx(
     () => Column(

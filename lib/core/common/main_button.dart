@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:flutter/material.dart';

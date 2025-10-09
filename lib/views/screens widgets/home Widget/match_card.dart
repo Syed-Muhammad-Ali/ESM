@@ -39,7 +39,7 @@ class _MatchCardState extends State<MatchCard> {
       // fun: () => Get.toNamed(AppRoutes.matchesDetails),
       fun: () {
         final matchCtrl = Get.find<MatchesController>();
-        matchCtrl.matchDetails.value = widget.match; // 👈 store selected user
+        matchCtrl.matchDetails.value = widget.match;
         Get.toNamed(AppRoutes.matchesDetails);
       },
 
@@ -75,7 +75,9 @@ class _MatchCardState extends State<MatchCard> {
                             loadingBuilder: (context, child, progress) {
                               if (progress == null) return child;
                               return const Center(
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(
+                                  color: AppColors.appBarColor,
+                                ),
                               );
                             },
                             errorBuilder:
@@ -125,7 +127,11 @@ class _MatchCardState extends State<MatchCard> {
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.appBarColor,
+                        ),
+                      );
                     },
                     errorBuilder:
                         (context, error, stackTrace) =>

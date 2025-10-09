@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Obx(() {
           if (homeCtrl.rxRequestStatus.value == Status.LOADING) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: AppColors.appBarColor,));
           }
           final currentUser = homeCtrl.currentUser.value;
 
