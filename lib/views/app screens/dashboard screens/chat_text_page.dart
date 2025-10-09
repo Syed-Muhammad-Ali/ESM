@@ -10,7 +10,6 @@ import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/constant/app_images.dart';
 import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
 import 'package:european_single_marriage/model/message_text_model.dart';
-import 'package:european_single_marriage/views/screens%20widgets/home%20Widget/Message%20Text%20Widget/more_option.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
@@ -137,7 +136,7 @@ class _MessageTextPageState extends State<MessageTextPage> {
                       ],
                     ),
                   ),
-                  MoreOptionsPopupMenu(),
+                  // MoreOptionsPopupMenu(),
                   // Row(
                   //   mainAxisSize: MainAxisSize.min,
                   //   children: [
@@ -280,7 +279,9 @@ class _MessageTextPageState extends State<MessageTextPage> {
       stream: messageCtrl.getMessages(widget.chatId!),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.appBarColor,));
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.appBarColor),
+          );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("No messages yet..."));
@@ -294,7 +295,7 @@ class _MessageTextPageState extends State<MessageTextPage> {
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];
-            
+
             final isSender = message.senderId == senderId;
 
             String? dayLabel;

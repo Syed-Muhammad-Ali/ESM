@@ -49,6 +49,8 @@ class AuthController extends GetxController with NetworkAwareController {
   final aboutYourselflCtrl = TextEditingController().obs;
   final casteCtrl = TextEditingController().obs;
   final subCasteCtrl = TextEditingController().obs;
+  final stateCtrl = TextEditingController().obs;
+  final cityCtrl = TextEditingController().obs;
 
   var selectedGender = ''.obs;
   var maritalStatus = ''.obs;
@@ -71,8 +73,8 @@ class AuthController extends GetxController with NetworkAwareController {
   var occupation = ''.obs;
   var annualIncome = ''.obs;
   var workLocation = ''.obs;
-  var selectedState = ''.obs;
-  var selectedCity = ''.obs;
+  // var selectedState = ''.obs;
+  // var selectedCity = ''.obs;
 
   List<String> maritalStatusOptions = ['Married', 'Unmarried', 'Divorced'];
   List<String> childrenOptions = ['0', '1', '2', '3', '4', '5'];
@@ -182,24 +184,24 @@ class AuthController extends GetxController with NetworkAwareController {
     '20+ Lakh',
   ];
 
-  final List<String> stateOptions = [
-    'Punjab',
-    'Sindh',
-    'Khyber Pakhtunkhwa',
-    'Balochistan',
-    'Islamabad Capital Territory',
-  ];
+  // final List<String> stateOptions = [
+  //   'Punjab',
+  //   'Sindh',
+  //   'Khyber Pakhtunkhwa',
+  //   'Balochistan',
+  //   'Islamabad Capital Territory',
+  // ];
 
-  final List<String> cityOptions = [
-    'Lahore',
-    'Karachi',
-    'Islamabad',
-    'Peshawar',
-    'Quetta',
-    'Multan',
-    'Faisalabad',
-    'Rawalpindi',
-  ];
+  // final List<String> cityOptions = [
+  //   'Lahore',
+  //   'Karachi',
+  //   'Islamabad',
+  //   'Peshawar',
+  //   'Quetta',
+  //   'Multan',
+  //   'Faisalabad',
+  //   'Rawalpindi',
+  // ];
 
   List<String> workLocationOptions = ['Remote', 'On-site', 'Hybrid'];
   void updateReligion(String value) => selectedReligion.value = value;
@@ -423,8 +425,8 @@ class AuthController extends GetxController with NetworkAwareController {
       'occupation': occupation.value,
       'annualIncome': annualIncome.value,
       'workLocation': workLocation.value,
-      'state': selectedState.value,
-      'city': selectedCity.value,
+      'state': stateCtrl.value.text.trim(),
+      'city': cityCtrl.value.text.trim(),
     });
     Get.toNamed(AppRoutes.aboutYourself);
   }
@@ -659,6 +661,8 @@ class AuthController extends GetxController with NetworkAwareController {
     aboutYourselflCtrl.value.clear();
     casteCtrl.value.clear();
     subCasteCtrl.value.clear();
+    stateCtrl.value.clear();
+    cityCtrl.value.clear();
 
     // Reset selections
     selectedGender.value = '';
@@ -678,8 +682,7 @@ class AuthController extends GetxController with NetworkAwareController {
     occupation.value = '';
     annualIncome.value = '';
     workLocation.value = '';
-    selectedState.value = '';
-    selectedCity.value = '';
+    // selectedCity.value = '';
     pickedImages.clear();
 
     update();

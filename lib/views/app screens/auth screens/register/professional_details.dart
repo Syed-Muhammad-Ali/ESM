@@ -1,5 +1,6 @@
 import 'package:european_single_marriage/controller/auth%20controller/auth_controller.dart';
 import 'package:european_single_marriage/core/common/custom_drop_down.dart';
+import 'package:european_single_marriage/core/common/custom_textfield.dart';
 import 'package:european_single_marriage/core/common/main_button.dart';
 import 'package:european_single_marriage/core/extensions/media_query.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
@@ -8,6 +9,7 @@ import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
 import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/views/screens%20widgets/auth%20widget/register_header.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 
 class ProfessionalDetails extends StatelessWidget {
@@ -79,22 +81,48 @@ class ProfessionalDetails extends StatelessWidget {
                         onChanged:
                             (val) => controller.workLocation.value = val ?? '',
                       ),
-                      CustomDropdown(
+                      CustomTextField(
                         title: "State:",
-                        hint: "Select State",
-                        items: controller.stateOptions,
-                        value: controller.selectedState.value,
-                        onChanged:
-                            (val) => controller.selectedState.value = val ?? '',
+                        controller: controller.stateCtrl.value,
+                        keyboardType: TextInputType.text,
+                        hintText: "Enter State",
+                        // filled: true,
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your state",
+                              ),
+                            ]).call,
                       ),
-                      CustomDropdown(
+                      // CustomDropdown(
+                      //   title: "State:",
+                      //   hint: "Select State",
+                      //   items: controller.stateOptions,
+                      //   value: controller.selectedState.value,
+                      //   onChanged:
+                      //       (val) => controller.selectedState.value = val ?? '',
+                      // ),
+                         CustomTextField(
                         title: "City:",
-                        hint: "Select City",
-                        items: controller.cityOptions,
-                        value: controller.selectedCity.value,
-                        onChanged:
-                            (val) => controller.selectedCity.value = val ?? '',
+                        controller: controller.stateCtrl.value,
+                        keyboardType: TextInputType.text,
+                        hintText: "Enter City",
+                        // filled: true,
+                        validator:
+                            MultiValidator([
+                              RequiredValidator(
+                                errorText: "Please enter your city",
+                              ),
+                            ]).call,
                       ),
+                      // CustomDropdown(
+                      //   title: "City:",
+                      //   hint: "Select City",
+                      //   items: controller.cityOptions,
+                      //   value: controller.selectedCity.value,
+                      //   onChanged:
+                      //       (val) => controller.selectedCity.value = val ?? '',
+                      // ),
 
                       SizedBox(height: context.screenHeight * 0.1),
                       Obx(
@@ -143,22 +171,22 @@ class ProfessionalDetails extends StatelessWidget {
                                 );
                                 return;
                               }
-                              if (controller.selectedState.value.isEmpty) {
-                                Utils.snackBar(
-                                  "Error",
-                                  "Please select state",
-                                  AppColors.red,
-                                );
-                                return;
-                              }
-                              if (controller.selectedCity.value.isEmpty) {
-                                Utils.snackBar(
-                                  "Error",
-                                  "Please select city",
-                                  AppColors.red,
-                                );
-                                return;
-                              }
+                              // if (controller.selectedState.value.isEmpty) {
+                              //   Utils.snackBar(
+                              //     "Error",
+                              //     "Please select state",
+                              //     AppColors.red,
+                              //   );
+                              //   return;
+                              // }
+                              // if (controller.selectedCity.value.isEmpty) {
+                              //   Utils.snackBar(
+                              //     "Error",
+                              //     "Please select city",
+                              //     AppColors.red,
+                              //   );
+                              //   return;
+                              // }
 
                               // ✅ Firestore save
                               controller.saveProfessionalDetails();

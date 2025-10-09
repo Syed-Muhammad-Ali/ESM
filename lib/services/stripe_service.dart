@@ -46,12 +46,12 @@
 
 
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
 class StripeService {
-  final String secretKey =
-      "sk_test_51QDKC1CdCbJv0pMUo9jEbVqJvTKShcpCPdlqObLI6HbcnAEBiP6m3vXojN5YOlzDHnTFXwK0xIIzdC9SzpBcQfhZ002iya9y6W";
+  final String? secretKey = dotenv.env['STRIPE_SECRET_KEY'];
 
   Future<bool> makePayment({
     required int amount,

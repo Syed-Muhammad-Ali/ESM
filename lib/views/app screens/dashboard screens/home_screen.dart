@@ -1,3 +1,4 @@
+import 'package:european_single_marriage/controller/home%20controller/dashboard_controller.dart';
 import 'package:european_single_marriage/controller/home%20controller/home_controller.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
@@ -91,31 +92,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const Spacer(),
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Image.asset("assets/images/bell.png", height: 28),
-                        // const Icon(
-                        //   Icons.notifications_none,
-                        //   size: 36,
-                        //   color: AppColors.orange,
-                        // ),
-                        if (homeCtrl.notifications.value > 0)
-                          Positioned(
-                            right: -3,
-                            top: -8,
-                            child: CircleAvatar(
-                              radius: 8,
-                              backgroundColor: AppColors.primaryColor,
-                              child: CustomText(
-                                title: homeCtrl.notifications.value.toString(),
-                                fontSize: 10,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                    // Stack(
+                    //   clipBehavior: Clip.none,
+                    //   children: [
+                    //     Image.asset("assets/images/bell.png", height: 28),
+                    //     // const Icon(
+                    //     //   Icons.notifications_none,
+                    //     //   size: 36,
+                    //     //   color: AppColors.orange,
+                    //     // ),
+                    //     if (homeCtrl.notifications.value > 0)
+                    //       Positioned(
+                    //         right: -3,
+                    //         top: -8,
+                    //         child: CircleAvatar(
+                    //           radius: 8,
+                    //           backgroundColor: AppColors.primaryColor,
+                    //           child: CustomText(
+                    //             title: homeCtrl.notifications.value.toString(),
+                    //             fontSize: 10,
+                    //             color: AppColors.white,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -314,41 +315,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             },
                           ),
-
-                          // GridView.count(
-                          //   physics: const NeverScrollableScrollPhysics(),
-                          //   shrinkWrap: true,
-                          //   crossAxisCount: 2,
-                          //   crossAxisSpacing: 12,
-                          //   mainAxisSpacing: 12,
-                          //   childAspectRatio: 1.2,
-                          //   children: [
-                          //     statCard(
-                          //       "Viewed You",
-                          //       users.viewedYou,
-                          //       Color(0xFF89A6F0),
-                          //       "assets/images/eye.png",
-                          //     ),
-                          //     statCard(
-                          //       "Sent Request",
-                          //       users.sentRequests,
-                          //       Color(0xFFFFC969),
-                          //       "assets/images/send.png",
-                          //     ),
-                          //     statCard(
-                          //       "Received Request",
-                          //       users.receivedRequests,
-                          //       Color(0xFFFC72AA),
-                          //       "assets/images/rreceivedequest.png",
-                          //     ),
-                          //     statCard(
-                          //       "Request Accepted",
-                          //       users.acceptedRequests,
-                          //       Color(0xFF47E76F),
-                          //       "assets/images/tick.png",
-                          //     ),
-                          //   ],
-                          // ),
                           AppSizes.spaceBtwItems.heightBox,
                           RecomendedCardWidget(
                             title: "Recommended Matches",
@@ -365,6 +331,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           RecomendedCardWidget(
                             title: "All Matches",
                             showActionButton: true,
+                            onTap: () {
+                              DashboardController.to.changeTabIndex(1);
+                            },
                             usersList: homeCtrl.allMatches.value,
                             searchQuery: homeCtrl.searchQuery.value,
                           ),

@@ -106,10 +106,7 @@ class HomeController extends GetxController with NetworkAwareController {
       final users = await firebaseServices
           .getDataFromFirestore<List<UserModel>>(
             collection: AppCollections.users,
-            where: {
-              "caste": currentUser.value!.caste,
-              "id": {"notEqual": currentUserId},
-            },
+            where: {"caste": currentUser.value!.caste},
             fromJson:
                 (jsonList) =>
                     (jsonList as List)
@@ -120,11 +117,15 @@ class HomeController extends GetxController with NetworkAwareController {
                         .toList(),
           );
 
-      sameCasteMatches.value = users ?? [];
+      // 🔹 Then remove current user locally (so no index is required)
+      sameCasteMatches.value =
+          (users ?? []).where((u) => u.id != currentUserId).toList();
+
       setRxRequestStatus(Status.COMPLETED);
     } catch (error) {
       errorMessage.value = "Failed to fetch same caste users: $error";
       setRxRequestStatus(Status.ERROR);
+      debugPrint("❌ Same caste fetch error: $error");
     }
   }
 
@@ -136,13 +137,11 @@ class HomeController extends GetxController with NetworkAwareController {
     try {
       setRxRequestStatus(Status.LOADING);
 
+      // 🔹 First get all users in same city
       final users = await firebaseServices
           .getDataFromFirestore<List<UserModel>>(
             collection: AppCollections.users,
-            where: {
-              "city": currentUser.value!.city,
-              "id": {"notEqual": currentUserId},
-            },
+            where: {"city": currentUser.value!.city},
             fromJson:
                 (jsonList) =>
                     (jsonList as List)
@@ -153,11 +152,15 @@ class HomeController extends GetxController with NetworkAwareController {
                         .toList(),
           );
 
-      nearLocationMatches.value = users ?? [];
+      // 🔹 Then remove current user locally (no index needed)
+      nearLocationMatches.value =
+          (users ?? []).where((u) => u.id != currentUserId).toList();
+
       setRxRequestStatus(Status.COMPLETED);
     } catch (error) {
       errorMessage.value = "Failed to fetch nearby users: $error";
       setRxRequestStatus(Status.ERROR);
+      debugPrint("❌ Near location fetch error: $error");
     }
   }
 
