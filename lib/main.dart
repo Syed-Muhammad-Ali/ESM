@@ -8,6 +8,7 @@ import 'package:european_single_marriage/services/applife_cycle_services.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 
 void main() async {
@@ -17,6 +18,9 @@ void main() async {
   await AppStorage.getLocalUser(AppKeys.userData);
   final appLifecycleReactor = AppLifecycleReactor();
   WidgetsBinding.instance.addObserver(appLifecycleReactor);
+  Stripe.publishableKey =
+      "pk_test_51QDKC1CdCbJv0pMUzUi9fcn64XMXlksYSau0gNMv9VVSLSMstDux0eM8ZKtOQWtnA6Oxi8cRyPsEQMzHkA6Xer3e00H8kqFUFl";
+
   runApp(DevicePreview(enabled: false, builder: (context) => const MyApp()));
 }
 

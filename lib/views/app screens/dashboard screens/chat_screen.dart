@@ -1,5 +1,7 @@
 import 'package:european_single_marriage/controller/home%20controller/chat_controller.dart';
+import 'package:european_single_marriage/controller/home%20controller/membership_controller.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
+import 'package:european_single_marriage/core/common/main_button.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:european_single_marriage/core/utils/constant/app_images.dart';
@@ -14,6 +16,7 @@ import 'package:get/get.dart';
 class ChatScreen extends StatelessWidget {
   ChatScreen({super.key});
   final ChatController controller = Get.put(ChatController());
+  final MembershipController membershipCtrl = Get.put(MembershipController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class ChatScreen extends StatelessWidget {
             ),
           ),
           AppSizes.spaceBtwSections.heightBox,
-          AppSizes.spaceBtwItems.heightBox,
+          // AppSizes.spaceBtwItems.heightBox,
 
           // 🔥 Firebase stream
           Expanded(
@@ -43,7 +46,11 @@ class ChatScreen extends StatelessWidget {
               stream: controller.fetchInboxStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.appBarColor,
+                    ),
+                  );
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text("No chats available"));
@@ -177,9 +184,51 @@ class ChatScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(AppRoutes.addFriendPage),
         backgroundColor: AppColors.primaryColor,
         child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () async {
+          await membershipCtrl.fetchSubscription();
+
+          if (membershipCtrl.hasActiveSubscription) {
+            // ✅ User has active plan → Go to AddFriendPage
+            Get.toNamed(AppRoutes.addFriendPage);
+          } else {
+            // ❌ No active plan → Show Dialog
+            Get.dialog(
+              AlertDialog(
+                title: const Text(
+                  "Subscription Required",
+                  style: TextStyle(fontSize: 18),
+                ),
+                content: const Text(
+                  "You need an active membership plan to use this feature.",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: AppColors.red),
+                    ),
+                  ),
+                  MainButton(
+                    width: 120,
+                    height: 41,
+                    title: "Get Membership",
+                    onPressed: () {
+                      Get.back();
+                      Get.toNamed(AppRoutes.membership);
+                    },
+                    fontSize: 14,
+                    backgroundColor: AppColors.primaryColor.withOpacity(.15),
+                    cir: 100,
+                    textColor: AppColors.primaryColor,
+                  ),
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }

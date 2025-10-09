@@ -17,7 +17,7 @@ import 'package:get/get.dart';
 
 class FirebaseService extends GetxService {
   final _db = FirebaseFirestore.instance;
-  final DatabaseReference db = FirebaseDatabase.instance.ref();
+  final DatabaseReference realdb = FirebaseDatabase.instance.ref();
   final _storage = FirebaseStorage.instance;
 
   /// --- SignUp With Emial ---
@@ -320,6 +320,7 @@ class FirebaseService extends GetxService {
     }
   }
 
+  /// --- Delete Profile Image  ---
   Future<void> deleteProfileImage(String userId) async {
     final ref = FirebaseStorage.instance.ref().child(
       'profile_images/$userId.jpg',
@@ -331,31 +332,44 @@ class FirebaseService extends GetxService {
     }
   }
 
-  // RealTime Database
+  /// --- Increment Profile View  ---
+  Future<void> incrementProfileView({
+    required String viewedUserId,
+    required String viewerUserId,
+    required String collection,
+  }) async {
+    final docRef = _db.collection(collection).doc(viewedUserId);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(docRef);
+
+      if (!snapshot.exists) return;
+
+      List<dynamic> viewedBy = snapshot.data()?['viewedBy'] ?? [];
+
+      // Only add if this user hasn't viewed already
+      if (!viewedBy.contains(viewerUserId)) {
+        viewedBy.add(viewerUserId);
+
+        transaction.update(docRef, {
+          'viewedBy': viewedBy,
+          'viewCount': viewedBy.length,
+        });
+      }
+    });
+  }
+
+  //////////// RealTime Database ////////////
   Future<void> saveToRealtimeDB({
     required String path,
     required dynamic data,
   }) async {
-    await db.child(path).set(data);
+    await realdb.child(path).set(data);
   }
 
   /// Convert image to Base64
   Future<String> convertImageToBase64(File file) async {
     final bytes = await file.readAsBytes();
     return base64Encode(bytes);
-  }
-
-  Future<List<Map<String, dynamic>>> getUsersByField({
-    required String collection,
-    required String field,
-    required String value,
-  }) async {
-    final snapshot =
-        await FirebaseFirestore.instance
-            .collection(collection)
-            .where(field, isEqualTo: value)
-            .get();
-
-    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 }
