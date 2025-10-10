@@ -279,11 +279,11 @@ class FirebaseService extends GetxService {
     }
   }
 
-  /// --- Delete User Data ---
-  Future<void> deleteUserData(String uid) async {
-    final userRef = _db.collection(AppCollections.users).doc(uid);
-    await userRef.delete();
-  }
+  /// --- Single Delete User Data ---
+  // Future<void> deleteUserData(String uid) async {
+  //   final userRef = _db.collection(AppCollections.users).doc(uid);
+  //   await userRef.delete();
+  // }
 
   /// --- Single Profile Image ---
   // Future<String> uploadProfileImage(String userId, File file) async {
@@ -329,6 +329,55 @@ class FirebaseService extends GetxService {
       await ref.delete();
     } catch (e) {
       print('No existing image to delete: $e');
+    }
+  }
+
+  /// --- Delete User Data (Firestore + Storage Images) ---
+  Future<void> deleteUserData(String uid) async {
+    final userRef = _db.collection(AppCollections.users).doc(uid);
+
+    try {
+      // ✅ 1. Get user data before deleting document
+      final userSnapshot = await userRef.get();
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data() as Map<String, dynamic>;
+
+        // ✅ 2. Delete all profile images (multiple)
+        if (userData['profileImages'] != null) {
+          final List<dynamic> imageUrls = userData['profileImages'];
+          for (final url in imageUrls) {
+            await _deleteFileFromUrl(url);
+          }
+        }
+
+        // ✅ 3. Delete single profile image if exists
+        if (userData['userProfilePic'] != null &&
+            userData['userProfilePic'].toString().isNotEmpty) {
+          await _deleteFileFromUrl(userData['userProfilePic']);
+        }
+      }
+
+      // ✅ 4. Finally delete Firestore user document
+      await userRef.delete();
+      debugPrint("✅ User document deleted successfully for UID: $uid");
+    } catch (e) {
+      debugPrint("⚠️ Error deleting user data: $e");
+      Utils.snackBar(
+        "Error",
+        "Something went wrong while deleting user data. Please try again!",
+        AppColors.red,
+      );
+    }
+  }
+
+  /// --- Helper: Delete file from Firebase Storage using download URL ---
+  Future<void> _deleteFileFromUrl(String url) async {
+    try {
+      final ref = _storage.refFromURL(url);
+      await ref.delete();
+      debugPrint("🗑️ Deleted file from Storage: $url");
+    } catch (e) {
+      debugPrint("⚠️ Failed to delete file from Storage: $e");
     }
   }
 
