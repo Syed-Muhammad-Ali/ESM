@@ -19,7 +19,7 @@ void main() async {
   await AppStorage.getLocalUser(AppKeys.userData);
   final appLifecycleReactor = AppLifecycleReactor();
   WidgetsBinding.instance.addObserver(appLifecycleReactor);
-  await dotenv.load(fileName: ".env");
+  // await dotenv.load(fileName: ".env");
   Stripe.publishableKey =
       "pk_test_51QDKC1CdCbJv0pMUzUi9fcn64XMXlksYSau0gNMv9VVSLSMstDux0eM8ZKtOQWtnA6Oxi8cRyPsEQMzHkA6Xer3e00H8kqFUFl";
 

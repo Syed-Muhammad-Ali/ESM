@@ -102,9 +102,9 @@ class ProfessionalDetails extends StatelessWidget {
                       //   onChanged:
                       //       (val) => controller.selectedState.value = val ?? '',
                       // ),
-                         CustomTextField(
+                      CustomTextField(
                         title: "City:",
-                        controller: controller.stateCtrl.value,
+                        controller: controller.cityCtrl.value,
                         keyboardType: TextInputType.text,
                         hintText: "Enter City",
                         // filled: true,
@@ -115,6 +115,7 @@ class ProfessionalDetails extends StatelessWidget {
                               ),
                             ]).call,
                       ),
+
                       // CustomDropdown(
                       //   title: "City:",
                       //   hint: "Select City",
@@ -123,7 +124,6 @@ class ProfessionalDetails extends StatelessWidget {
                       //   onChanged:
                       //       (val) => controller.selectedCity.value = val ?? '',
                       // ),
-
                       SizedBox(height: context.screenHeight * 0.1),
                       Obx(
                         () => MainButton(
