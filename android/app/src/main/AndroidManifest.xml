@@ -4,7 +4,7 @@
 <uses-premission andriod:name="andriod.premission.WRITE_EXTERNAL_STORAGE"/>
 <uses-premission andriod:name="andriod.premission.READ_EXTERNAL_STORAGE"/> -->
     <application
-        android:label="european_single_marriage"
+        android:label="European Single Marriage"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

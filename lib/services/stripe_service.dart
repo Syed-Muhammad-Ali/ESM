@@ -14,6 +14,7 @@ class StripeService {
   }) async {
     try {
       // 1️⃣ Create PaymentIntent via Stripe API
+      final int finalAmount = amount * 100;
       final response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
@@ -21,7 +22,7 @@ class StripeService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: {
-          'amount': (amount * 100).toString(), // cents
+          'amount': finalAmount.toString(),
           'currency': currency,
           'payment_method_types[]': 'card',
         },

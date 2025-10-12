@@ -188,17 +188,17 @@ class Membership extends StatelessWidget {
                     AppSizes.spaceBtwItems.heightBox,
                     subscriptionButton(
                       title: "1 Month Plan",
-                      price: "99.99",
+                      price: "25.00",
 
                       onPressed: () async {
                         final success = await stripeService.makePayment(
-                          amount: 100,
+                          amount: 25,
                           currency: "usd",
                         );
 
                         if (success) {
                           await membershipCtrl.createSubscription(
-                            99.99,
+                            25.00,
                             "1 Month Premium",
                           );
                           Utils.snackBar(
