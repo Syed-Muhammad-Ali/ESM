@@ -19,6 +19,7 @@ class AppImages {
   static const String vedioCall = "assets/svg/vedioCall.svg";
   static const String call = "assets/svg/call.svg";
   static const String more = "assets/svg/more.svg";
+  static const String google = "assets/svg/google_icon.svg";
   // BottomBar
   static const String home = "assets/svg/home.svg";
   static const String matches = "assets/svg/matches.svg";

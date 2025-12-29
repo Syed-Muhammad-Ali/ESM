@@ -1,5 +1,7 @@
+import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:european_single_marriage/controller/auth%20controller/auth_controller.dart';
 import 'package:european_single_marriage/core/common/custom_drop_down.dart';
+import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/common/custom_textfield.dart';
 import 'package:european_single_marriage/core/common/main_button.dart';
 import 'package:european_single_marriage/core/extensions/media_query.dart';
@@ -12,11 +14,17 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 
-class ProfessionalDetails extends StatelessWidget {
-  final controller = Get.find<AuthController>();
-  final _formKey = GlobalKey<FormState>();
+class ProfessionalDetails extends StatefulWidget {
+  const ProfessionalDetails({super.key});
 
-  ProfessionalDetails({super.key});
+  @override
+  State<ProfessionalDetails> createState() => _ProfessionalDetailsState();
+}
+
+class _ProfessionalDetailsState extends State<ProfessionalDetails> {
+  final controller = Get.find<AuthController>();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -81,19 +89,81 @@ class ProfessionalDetails extends StatelessWidget {
                         onChanged:
                             (val) => controller.workLocation.value = val ?? '',
                       ),
-                      CustomTextField(
-                        title: "State:",
-                        controller: controller.stateCtrl.value,
-                        keyboardType: TextInputType.text,
-                        hintText: "Enter State",
-                        // filled: true,
-                        validator:
-                            MultiValidator([
-                              RequiredValidator(
-                                errorText: "Please enter your state",
-                              ),
-                            ]).call,
+                      CustomText(
+                        title: "Country, State and City:",
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.gray1,
                       ),
+                      CSCPickerPlus(
+                        currentCountry:
+                            controller.countryValue.value.isNotEmpty
+                                ? controller.countryValue.value
+                                : null,
+                        currentState:
+                            controller.stateValue.value.isNotEmpty
+                                ? controller.stateValue.value
+                                : null,
+                        currentCity:
+                            controller.cityValue.value.isNotEmpty
+                                ? controller.cityValue.value
+                                : null,
+                        dropdownDecoration: BoxDecoration(
+                          color: const Color(0xFFFCFCFD),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.borderCol,
+                            width: 1.5,
+                          ),
+                        ),
+
+                        // dropdownHeadingStyle: AppStyle.textFieldStyle.copyWith(
+                        //   decoration: TextDecoration.none,
+                        // ),
+                        // selectedItemStyle: AppStyle.textFieldStyle.copyWith(
+                        //   decoration: TextDecoration.none,
+                        // ),
+                        disabledDropdownDecoration: BoxDecoration(
+                          color: Color(0xFFFCFCFD),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.borderCol,
+                            width: 1.5,
+                          ),
+                        ),
+
+                        countryStateLanguage:
+                            CountryStateLanguage.englishOrNative,
+                        onCountryChanged: (value) {
+                          setState(() {
+                            controller.countryValue.value = value;
+                          });
+                        },
+                        onStateChanged: (value) {
+                          setState(() {
+                            controller.stateValue.value = value ?? '';
+                          });
+                        },
+                        onCityChanged: (value) {
+                          setState(() {
+                            controller.cityValue.value = value ?? '';
+                          });
+                        },
+                      ),
+                      // CustomTextField(
+                      //   title: "State:",
+                      //   controller: controller.stateCtrl.value,
+                      //   keyboardType: TextInputType.text,
+                      //   hintText: "Enter State",
+                      //   // filled: true,
+                      //   validator:
+                      //       MultiValidator([
+                      //         RequiredValidator(
+                      //           errorText: "Please enter your state",
+                      //         ),
+                      //       ]).call,
+                      // ),
+
                       // CustomDropdown(
                       //   title: "State:",
                       //   hint: "Select State",
@@ -102,20 +172,19 @@ class ProfessionalDetails extends StatelessWidget {
                       //   onChanged:
                       //       (val) => controller.selectedState.value = val ?? '',
                       // ),
-                      CustomTextField(
-                        title: "City:",
-                        controller: controller.cityCtrl.value,
-                        keyboardType: TextInputType.text,
-                        hintText: "Enter City",
-                        // filled: true,
-                        validator:
-                            MultiValidator([
-                              RequiredValidator(
-                                errorText: "Please enter your city",
-                              ),
-                            ]).call,
-                      ),
-
+                      // CustomTextField(
+                      //   title: "City:",
+                      //   controller: controller.cityCtrl.value,
+                      //   keyboardType: TextInputType.text,
+                      //   hintText: "Enter City",
+                      //   // filled: true,
+                      //   validator:
+                      //       MultiValidator([
+                      //         RequiredValidator(
+                      //           errorText: "Please enter your city",
+                      //         ),
+                      //       ]).call,
+                      // ),
                       // CustomDropdown(
                       //   title: "City:",
                       //   hint: "Select City",

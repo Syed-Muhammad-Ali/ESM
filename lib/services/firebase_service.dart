@@ -14,11 +14,40 @@ import 'package:firebase_database/firebase_database.dart' hide Query;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseService extends GetxService {
   final _db = FirebaseFirestore.instance;
   final DatabaseReference realdb = FirebaseDatabase.instance.ref();
   final _storage = FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  /// --- Google Sign In ---
+  Future<String?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+
+      return userCredential.user?.uid;
+    } catch (e) {
+      debugPrint("Google Sign In Error: $e");
+      return null;
+    }
+  }
 
   /// --- SignUp With Emial ---
   Future<String?> signUpWithEmailAndPassword({

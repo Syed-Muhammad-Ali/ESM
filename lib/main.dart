@@ -8,7 +8,6 @@ import 'package:european_single_marriage/services/applife_cycle_services.dart';
 import 'package:european_single_marriage/services/firebase_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 

@@ -23,6 +23,7 @@ class AuthController extends GetxController with NetworkAwareController {
   static AuthController get instance => Get.find();
 
   RxBool loading = false.obs;
+  RxBool googleLoginLoading = false.obs;
   RxBool isPasswordHidden = true.obs;
 
   final rxRequestStatus = Status.LOADING.obs;
@@ -49,8 +50,8 @@ class AuthController extends GetxController with NetworkAwareController {
   final aboutYourselflCtrl = TextEditingController().obs;
   final casteCtrl = TextEditingController().obs;
   final subCasteCtrl = TextEditingController().obs;
-  final stateCtrl = TextEditingController().obs;
-  final cityCtrl = TextEditingController().obs;
+  // final stateCtrl = TextEditingController().obs;
+  // final cityCtrl = TextEditingController().obs;
 
   var selectedGender = ''.obs;
   var maritalStatus = ''.obs;
@@ -75,6 +76,9 @@ class AuthController extends GetxController with NetworkAwareController {
   var workLocation = ''.obs;
   // var selectedState = ''.obs;
   // var selectedCity = ''.obs;
+  RxString countryValue = ''.obs;
+  RxString stateValue = ''.obs;
+  RxString cityValue = ''.obs;
 
   List<String> maritalStatusOptions = ['Married', 'Unmarried', 'Divorced'];
   List<String> childrenOptions = ['0', '1', '2', '3', '4', '5'];
@@ -343,7 +347,6 @@ class AuthController extends GetxController with NetworkAwareController {
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      /// 🧠 LOG: Print or log the data before sending to Firestore
       log('🔥 Sending data to Firestore for user ${user.uid}:');
       dataToSend.forEach((key, value) {
         log('   $key : $value');
@@ -425,69 +428,14 @@ class AuthController extends GetxController with NetworkAwareController {
       'occupation': occupation.value,
       'annualIncome': annualIncome.value,
       'workLocation': workLocation.value,
-      'state': stateCtrl.value.text.trim(),
-      'city': cityCtrl.value.text.trim(),
+      'country': countryValue.value,
+      'state': stateValue.value,
+      'city': cityValue.value,
+      // 'state': stateCtrl.value.text.trim(),
+      // 'city': cityCtrl.value.text.trim(),
     });
     Get.toNamed(AppRoutes.aboutYourself);
   }
-
-  // Future<bool> saveAboutYourself() async {
-  //   if (!await checkConnection(
-  //     statusController: rxRequestStatus,
-  //     errorController: errorMessage,
-  //   )) {
-  //     return true;
-  //   }
-
-  //   try {
-  //     loading.value = true;
-  //     setRxRequestStatus(Status.LOADING);
-
-  //     final user = FirebaseAuth.instance.currentUser;
-  //     if (user == null) throw Exception("User not logged in");
-
-  //     // ✅ Convert picked images to Base64
-  //     List<String> base64Images = [];
-  //     for (int i = 0; i < pickedImages.length; i++) {
-  //       final base64Image = await firebaseServices.convertImageToBase64(
-  //         pickedImages[i],
-  //       );
-  //       base64Images.add(base64Image);
-  //     }
-
-  //     // ✅ Save only profileImages in Realtime DB
-  //     await firebaseServices.saveToRealtimeDB(
-  //       path: "users/${user.uid}/profileImages",
-  //       data: base64Images,
-  //     );
-
-  //     // ✅ Save about yourself + meta data in Firestore
-  //     await firebaseServices.updateDataToFirestore(
-  //       collection: AppCollections.users,
-  //       id: user.uid,
-  //       data: {
-  //         "aboutYourself": aboutYourselflCtrl.value.text.trim(),
-  //         "profileStep": 5,
-  //         "profileCompletion": 100,
-  //         "profileImages": base64Images,
-  //         "updatedAt": FieldValue.serverTimestamp(),
-  //       },
-  //     );
-
-  //     Utils.snackBar("Success", "Profile completed!", AppColors.green);
-  //     setRxRequestStatus(Status.COMPLETED);
-  //     clearController();
-  //     return true;
-  //   } catch (e) {
-  //     errorMessage.value = e.toString();
-  //     log("Error : $e");
-  //     setRxRequestStatus(Status.ERROR);
-  //     Utils.snackBar("Error", e.toString(), AppColors.red);
-  //     return false;
-  //   } finally {
-  //     loading.value = false;
-  //   }
-  // }
 
   Future<bool> saveAboutYourself() async {
     if (!await checkConnection(
@@ -600,6 +548,80 @@ class AuthController extends GetxController with NetworkAwareController {
     }
   }
 
+  /// --- Google Login ---
+  Future<void> loginWithGoogle() async {
+    if (!await checkConnection(
+      statusController: rxRequestStatus,
+      errorController: errorMessage,
+    )) {
+      return;
+    }
+
+    try {
+      googleLoginLoading.value = true;
+      setRxRequestStatus(Status.LOADING);
+
+      final uid = await firebaseServices.signInWithGoogle();
+      if (uid == null) {
+        Utils.snackBar("Login Failed", "Google login cancelled", AppColors.red);
+        return;
+      }
+
+      final userAuth = FirebaseAuth.instance.currentUser;
+      if (userAuth == null) return;
+      await AppStorage.set('email', userAuth.email ?? '');
+      await AppStorage.set('password', 'google_login');
+
+      await AppStorage.set('email', userAuth.email ?? '');
+      await AppStorage.set('password', 'google_login');
+
+      var user = await firebaseServices.getUserData(uid: uid);
+
+      if (user == null) {
+        Map<String, dynamic> data = {
+          'id': uid,
+          'name': userAuth.displayName ?? '',
+          'email': userAuth.email ?? '',
+          'profileStep': 0,
+          'profileCompletion': 0,
+          'createdAt': FieldValue.serverTimestamp(),
+        };
+
+        await firebaseServices.addDataToFirestore(
+          data: data,
+          collection: AppCollections.users,
+          id: uid,
+        );
+
+        user = await firebaseServices.getUserData(uid: uid);
+      }
+
+      if (user != null) {
+        await AppStorage.storeLocalUser(AppKeys.userData, user.toJson());
+        await AppStorage.setUserID(user.id);
+        await firebaseServices.setUserStatus(user.id!, "online");
+
+        Utils.snackBar(
+          "Success",
+          "Welcome ${userAuth.email ?? ''}",
+          AppColors.green,
+        );
+
+        Get.offAllNamed(AppRoutes.dashboardScreen);
+        setRxRequestStatus(Status.COMPLETED);
+      } else {
+        Utils.snackBar("Error", "User data not found", AppColors.red);
+        setRxRequestStatus(Status.ERROR);
+      }
+    } catch (e) {
+      googleLoginLoading.value = false;
+      setRxRequestStatus(Status.ERROR);
+      Utils.snackBar("Error", e.toString(), AppColors.red);
+    } finally {
+      googleLoginLoading.value = false;
+    }
+  }
+
   /// --- Logout  --- ///
   Future<void> logout() async {
     if (!await checkConnection(
@@ -626,25 +648,6 @@ class AuthController extends GetxController with NetworkAwareController {
     }
   }
 
-  // Future<void> fetchUserdata() async {
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user != null) {
-  //     final doc =
-  //         await FirebaseFirestore.instance
-  //             .collection('users')
-  //             .doc(user.uid)
-  //             .get();
-  //     // ignore: avoid_print
-  //     print('Firestore user data: ${doc.data()}');
-  //     if (!doc.exists || doc.data() == null) {
-  //       Get.snackbar('Error', 'User document does not exist in Firestore');
-  //       return;
-  //     }
-
-  //     userData.value = UserModel.fromFirestore(doc);
-  //   }
-  // }
-
   /// --- Clear Fields  ---
   void clearController() {
     loginUserEmail.value.clear();
@@ -661,8 +664,8 @@ class AuthController extends GetxController with NetworkAwareController {
     aboutYourselflCtrl.value.clear();
     casteCtrl.value.clear();
     subCasteCtrl.value.clear();
-    stateCtrl.value.clear();
-    cityCtrl.value.clear();
+    // stateCtrl.value.clear();
+    // cityCtrl.value.clear();
 
     // Reset selections
     selectedGender.value = '';
@@ -682,6 +685,9 @@ class AuthController extends GetxController with NetworkAwareController {
     occupation.value = '';
     annualIncome.value = '';
     workLocation.value = '';
+    countryValue.value = "";
+    stateValue.value = "";
+    cityValue.value = "";
     // selectedCity.value = '';
     pickedImages.clear();
 

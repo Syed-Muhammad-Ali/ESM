@@ -3,6 +3,7 @@
 import 'package:european_single_marriage/core/common/custom_text.dart';
 import 'package:european_single_marriage/core/utils/constant/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class MainButton extends StatelessWidget {
@@ -19,6 +20,8 @@ class MainButton extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
   bool loading;
+  final Color? borderColor;
+  final double borderWidth;
 
   MainButton({
     super.key,
@@ -35,7 +38,20 @@ class MainButton extends StatelessWidget {
     this.fontWeight,
     this.imageHeight,
     this.loading = false,
+    this.borderColor,
+    this.borderWidth = 1,
   });
+
+  Widget _buildImage(String path) {
+    final isSvg = path.toLowerCase().endsWith('.svg');
+
+    if (isSvg) {
+      return SvgPicture.asset(path, height: imageHeight ?? 24);
+    } else {
+      return Image.asset(path, height: imageHeight ?? 24);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -48,6 +64,10 @@ class MainButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(cir ?? 10),
           ),
+          side:
+              borderColor != null
+                  ? BorderSide(color: borderColor!, width: borderWidth)
+                  : BorderSide.none,
           padding: EdgeInsets.zero,
           elevation: 0,
         ),
@@ -82,16 +102,10 @@ class MainButton extends StatelessWidget {
             ),
 
             if (leftImage != null)
-              Positioned(
-                left: 12,
-                child: Image.asset(leftImage!, height: imageHeight ?? 24),
-              ),
+              Positioned(left: 12, child: _buildImage(leftImage!)),
 
             if (rightImage != null)
-              Positioned(
-                right: 12,
-                child: Image.asset(rightImage!, height: imageHeight ?? 24),
-              ),
+              Positioned(right: 12, child: _buildImage(rightImage!)),
           ],
         ),
       ),

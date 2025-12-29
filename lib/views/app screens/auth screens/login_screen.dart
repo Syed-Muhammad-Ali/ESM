@@ -71,6 +71,23 @@ class LoginScreen extends StatelessWidget {
               },
             ),
           ),
+          AppSizes.spaceMd.heightBox,
+          Obx(
+            () => MainButton(
+              title: "Continue with Google",
+              loading: authCtrl.googleLoginLoading.value,
+              textColor: AppColors.black,
+              borderColor: AppColors.borderCol,
+              borderWidth: 1,
+              backgroundColor: Colors.transparent,
+              leftImage: AppImages.google,
+              imageHeight: 22,
+              onPressed: () {
+                authCtrl.loginWithGoogle();
+              },
+            ),
+          ),
+
           AppSizes.xxl.heightBox,
           RichText(
             text: TextSpan(

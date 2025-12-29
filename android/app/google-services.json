@@ -13,7 +13,20 @@
           "package_name": "com.example.european_single_marriage"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "70244816577-1ggfajkka21q5tb2h841tpfa8p1vtra3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.european_single_marriage",
+            "certificate_hash": "435fafbf2efcb2ce6511e640ba362ef4e032f0a2"
+          }
+        },
+        {
+          "client_id": "70244816577-inln5mnqvg3b7r0gic2vvh515mgtg6vo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAQpcSKYS3vdlKk6BuvRbnS2gI7jMpdt-M"
@@ -21,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70244816577-inln5mnqvg3b7r0gic2vvh515mgtg6vo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70244816577-qkcdvkn1ja20quqpb2t62itfth58qkkm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.europeanSingleMarriage"
+              }
+            }
+          ]
         }
       }
     }
