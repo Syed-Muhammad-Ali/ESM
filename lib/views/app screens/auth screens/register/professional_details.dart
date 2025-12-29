@@ -2,7 +2,6 @@ import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:european_single_marriage/controller/auth%20controller/auth_controller.dart';
 import 'package:european_single_marriage/core/common/custom_drop_down.dart';
 import 'package:european_single_marriage/core/common/custom_text.dart';
-import 'package:european_single_marriage/core/common/custom_textfield.dart';
 import 'package:european_single_marriage/core/common/main_button.dart';
 import 'package:european_single_marriage/core/extensions/media_query.dart';
 import 'package:european_single_marriage/core/extensions/size_box_extension.dart';
@@ -11,7 +10,6 @@ import 'package:european_single_marriage/core/utils/constant/app_sizes.dart';
 import 'package:european_single_marriage/core/utils/snackBar/snackbar_utils.dart';
 import 'package:european_single_marriage/views/screens%20widgets/auth%20widget/register_header.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 
 class ProfessionalDetails extends StatefulWidget {
